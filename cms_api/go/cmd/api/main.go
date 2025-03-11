@@ -1,20 +1,17 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"github.com/aws/aws-lambda-go/lambda"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
-type MyEvent struct {
-		Name string `json:"name"`
-}
- 
 func main() {
-	lambda.Start(handler)
+	e := echo.New()
+	e.GET("/", hello)
+	e.Logger.Fatal(e.Start(":8000"))
 }
 
-func handler(ctx context.Context, name MyEvent) (string, error) {
-    return fmt.Sprintf("Hello %s!", name.Name), nil
+func hello(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello!")
 }
- 

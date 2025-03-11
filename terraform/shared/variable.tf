@@ -38,6 +38,16 @@ variable "language" {
   }
 }
 
+variable "image_name" {
+  type        = string
+  description = "The name of the image"
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9-]+$", var.image_name))
+    error_message = "The image name must contain only letters, numbers and hyphens."
+  }
+}
+
 locals {
   codedir_local_path              = "${path.module}/../../cms_api/${var.language}"
   package_local_path              = "${local.codedir_local_path}/main.zip"

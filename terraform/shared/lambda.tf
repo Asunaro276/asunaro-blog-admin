@@ -1,13 +1,11 @@
 resource "aws_lambda_function" "cms" {
-  function_name    = "${var.name}-api-lambda"
-  description      = "Lambda function for the CMS API"
-  s3_bucket        = aws_s3_bucket.lambda_assets.bucket
-  s3_key           = local.package_s3_key
-  handler          = "main"
-  role             = aws_iam_role.cms_lambda.arn
-  runtime          = "provided.al2023"
-  source_code_hash = data.aws_s3_object.lambda_package_hash.body
-  timeout          = 30
+  depends_on = [ null_resource.build_and_push_image ]
+  function_name = "${var.name}-api-lambda"
+  description   = "Lambda function for the CMS API"
+  package_type  = "Image"
+  role          = aws_iam_role.cms_lambda.arn
+  image_uri     = "${aws_ecr_repository.default.repository_url}:${data.external.git.result.sha}"
+  timeout       = 30
 }
 
 resource "aws_iam_role" "cms_lambda" {
