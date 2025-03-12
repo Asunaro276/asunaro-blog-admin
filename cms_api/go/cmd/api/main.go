@@ -20,6 +20,7 @@ func init() {
 
 	e := echo.New()
 	e.Use(middleware.Recover())
+	e.GET("/", healthcheck.Healthcheck)
 	e.GET("/healthcheck", healthcheck.Healthcheck)
 
 	echoLambda = echoadapter.New(e)

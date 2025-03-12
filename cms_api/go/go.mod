@@ -5,9 +5,12 @@ go 1.21
 toolchain go1.24.1
 
 require (
-	github.com/aws/aws-lambda-go v1.47.0 // indirect
-	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2 // indirect
-	github.com/labstack/echo/v4 v4.13.3 // indirect
+	github.com/aws/aws-lambda-go v1.47.0
+	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
+	github.com/labstack/echo/v4 v4.13.3
+)
+
+require (
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
