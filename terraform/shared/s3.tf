@@ -34,12 +34,12 @@ resource "null_resource" "lambda_package" {
 
   provisioner "local-exec" {
     // Build the lambda package and zip it
-    working_dir = local.codedir_local_path
+    working_dir = "${local.codedir_local_path}/admin_api_server"
     environment = {
       GOOS   = "linux"
       GOARCH = "amd64"
     }
-    command = "go build -o bootstrap ./cmd/api/main.go && zip main.zip bootstrap"
+    command = "go build -o ./output/bootstrap ./cmd/main.go && zip ./output/main.zip ./output/bootstrap"
   }
 
   provisioner "local-exec" {

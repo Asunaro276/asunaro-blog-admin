@@ -3,10 +3,10 @@ module admin_api_server
 go 1.24.1
 
 require (
+	admin v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
 	github.com/labstack/echo/v4 v4.13.3
-	admin v0.0.0
 )
 
 require (
