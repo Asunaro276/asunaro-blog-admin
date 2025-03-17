@@ -13,8 +13,8 @@ variable "environment" {
   description = "The environment"
 
   validation {
-    condition     = var.environment == "qa" || var.environment == "production"
-    error_message = "The environment must be either 'qa' or 'production'."
+    condition     = var.environment == "dev" || var.environment == "qa" || var.environment == "production"
+    error_message = "The environment must be 'dev', 'qa' or 'production'."
   }
 }
 
@@ -46,6 +46,18 @@ variable "image_name" {
     condition     = can(regex("^[a-zA-Z0-9-]+$", var.image_name))
     error_message = "The image name must contain only letters, numbers and hyphens."
   }
+}
+
+variable "skip_credentials_validation" {
+  type        = bool
+  description = "Skip credentials validation"
+  default     = false
+}
+
+variable "skip_requesting_account_id" {
+  type        = bool
+  description = "Skip requesting account id"
+  default     = false
 }
 
 locals {
