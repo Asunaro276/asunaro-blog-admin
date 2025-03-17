@@ -1,13 +1,12 @@
-module cms
+module admin_api_server
 
-go 1.21
-
-toolchain go1.24.1
+go 1.24.1
 
 require (
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
 	github.com/labstack/echo/v4 v4.13.3
+	admin v0.0.0
 )
 
 require (
@@ -22,3 +21,5 @@ require (
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
 )
+
+replace admin => ../pkg/admin

@@ -1,7 +1,10 @@
 package main
 
 import (
-	"cms/internal/usecase/healthcheck"
+	"admin_api_server/internal/controller"
+	"admin_api_server/internal/usecase/content"
+	"admin_api_server/internal/usecase/healthcheck"
+	"admin/infrastructure/repository"
 	"context"
 	"log"
 
@@ -20,7 +23,18 @@ func init() {
 
 	e := echo.New()
 	e.Use(middleware.Recover())
-	e.GET("/", healthcheck.Healthcheck)
+
+	// リポジトリの初期化
+	contentRepo := repository.NewContentRepository()
+
+	// ユースケースの初期化
+	contentUsecase := usecase.NewContentUsecase(contentRepo)
+
+	// コントローラーの初期化
+	contentController := controller.NewContentController(contentUsecase)
+
+	// ルーティング
+	e.GET("/", contentController.GetContent)
 	e.GET("/healthcheck", healthcheck.Healthcheck)
 
 	echoLambda = echoadapter.New(e)

@@ -1,4 +1,4 @@
-.PHONY: test test-coverage test-verbose mock clean
+.PHONY: test test-coverage test-verbose mock clean run-local docker-build docker-run
 
 # デフォルトのターゲット
 all: test
@@ -25,3 +25,15 @@ mock:
 clean:
 	rm -f coverage.out coverage.html
 	rm -rf mocks/ 
+
+# ローカルでAPIサーバーを実行
+run-local:
+	cd admin_api_server && go run cmd/local/main.go
+
+# Dockerイメージをビルド
+docker-build:
+	docker build -t cms-api-local .
+
+# Dockerコンテナを実行
+docker-run:
+	docker run -p 8080:8080 cms-api-local 
