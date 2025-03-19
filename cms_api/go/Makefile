@@ -18,8 +18,7 @@ test-verbose:
 
 # モックを生成
 mock:
-	go install github.com/vektra/mockery/v2@latest
-	mockery
+	go tool mockery
 
 # 生成されたファイルをクリーンアップ
 clean:

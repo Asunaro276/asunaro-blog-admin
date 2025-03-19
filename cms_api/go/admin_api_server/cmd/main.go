@@ -24,10 +24,10 @@ func init() {
 	e.Use(middleware.Recover())
 
 	// リポジトリの初期化
-	contentRepo := repository.NewContentRepository()
+	contentRepository := repository.NewContentRepository()
 
 	// ユースケースの初期化
-	contentUsecase := usecase.NewContentUsecase(contentRepo)
+	contentUsecase := usecase.NewContentUsecase(contentRepository)
 
 	// コントローラーの初期化
 	contentController := controller.NewContentController(contentUsecase)

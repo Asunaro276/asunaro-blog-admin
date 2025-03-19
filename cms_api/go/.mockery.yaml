@@ -1,13 +1,17 @@
-with-expecter: true
-dir: "mocks"
-filename: "{{.InterfaceName}}.go"
+with-expecter: True
+issue-845-fix: True
+disable-version-string: True
+resolve-type-alias: False
+
+dir: "{{ .InterfaceDir }}/mocks"
+mockname: "{{.InterfaceName | camelcase }}"
 outpkg: "mocks"
+filename: "{{.InterfaceName }}.go"
+
 packages:
-  cms/internal/repository:
+  admin_api_server/internal/controller:
     interfaces:
-      Repository:
-  cms/internal/usecase:
+      getContents:
+  admin_api_server/internal/usecase:
     interfaces:
-      UseCase:
-all: true
-keeptree: true 
+      getContents:

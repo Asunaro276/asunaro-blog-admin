@@ -20,20 +20,30 @@ func NewContentRepository() *contentRepository {
 }
 
 // GetContent はコンテンツを取得します
-func (cr *contentRepository) GetContent() (*model.Content, error) {
+func (cr *contentRepository) GetContents() ([]model.Content, error) {
 	// 実際の実装ではデータベースからデータを取得します
 	// ここではサンプルデータを返します
 	now := time.Now()
-	content := &model.Content{
-		ID:        "1",
-		Title:     "サンプルコンテンツ",
-		Body:      "これはサンプルコンテンツです。",
-		Author:    "管理者",
-		CreatedAt: now.Add(-24 * time.Hour),
-		UpdatedAt: now,
+	contents := []model.Content{
+		{
+			ID:        "1",
+			Title:     "サンプルコンテンツ1",
+			Body:      "これはサンプルコンテンツ1です。",
+			Author:    "管理者",
+			CreatedAt: now.Add(-24 * time.Hour),
+			UpdatedAt: now,
+		},
+		{
+			ID:        "2",
+			Title:     "サンプルコンテンツ2",
+			Body:      "これはサンプルコンテンツ2です。",
+			Author:    "管理者",
+			CreatedAt: now.Add(-48 * time.Hour),
+			UpdatedAt: now.Add(-24 * time.Hour),
+		},
 	}
 
-	return content, nil
+	return contents, nil
 }
 
 // ListContents はコンテンツのリストを取得します
