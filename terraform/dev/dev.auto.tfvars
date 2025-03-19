@@ -1,5 +1,5 @@
 name = "cms"
-environment = "dev"
+env = "dev"
 domain = ""
 language = "go"
 image_name = "cms-api"

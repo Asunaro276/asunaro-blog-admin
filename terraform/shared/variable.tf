@@ -8,12 +8,12 @@ variable "name" {
   }
 }
 
-variable "environment" {
+variable "env" {
   type        = string
   description = "The environment"
 
   validation {
-    condition     = var.environment == "dev" || var.environment == "qa" || var.environment == "production"
+    condition     = var.env == "dev" || var.env == "qa" || var.env == "production"
     error_message = "The environment must be 'dev', 'qa' or 'production'."
   }
 }

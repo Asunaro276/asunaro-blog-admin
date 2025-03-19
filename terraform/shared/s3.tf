@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "lambda_assets" {
-  bucket = "lambda-assets-${var.name}"
+  bucket = "lambda-assets-${var.name}-${var.env}"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "lambda_assets" {
@@ -39,7 +39,7 @@ resource "null_resource" "lambda_package" {
       GOOS   = "linux"
       GOARCH = "amd64"
     }
-    command = "go build -o ./output/bootstrap ./cmd/main.go && zip ./output/main.zip ./output/bootstrap"
+    command = "go build -o ./output/bootstrap ./cmd/main.go && cd output && zip main.zip bootstrap"
   }
 
   provisioner "local-exec" {

@@ -1,5 +1,5 @@
 name = "cms"
-environment = "qa"
+env = "qa"
 domain = ""
 language = "go"
 image_name = "cms-api"
