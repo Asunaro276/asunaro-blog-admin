@@ -60,6 +60,12 @@ variable "skip_requesting_account_id" {
   default     = false
 }
 
+variable "aws_endpoint_url_s3" {
+  type        = string
+  description = "The endpoint url of the s3"
+  default     = ""
+}
+
 locals {
   codedir_local_path              = "${path.module}/../../cms_api/${var.language}"
   package_local_path              = "${local.codedir_local_path}/admin_api_server/output/main.zip"

@@ -45,6 +45,9 @@ resource "null_resource" "lambda_package" {
   provisioner "local-exec" {
     // Upload the lambda package to the s3 bucket
     command = "aws s3 cp ${local.package_local_path} s3://${aws_s3_bucket.lambda_assets.bucket}/${local.package_s3_key}"
+    environment = {
+      AWS_ENDPOINT_URL_S3 = var.aws_endpoint_url_s3
+    }
   }
 
   provisioner "local-exec" {
@@ -55,6 +58,9 @@ resource "null_resource" "lambda_package" {
   provisioner "local-exec" {
     // Upload the sha256 hash of the lambda package to the s3 bucket
     command = "aws s3 cp ${local.package_base64sha256_local_path} s3://${aws_s3_bucket.lambda_assets.bucket}/${local.package_base64sha256_s3_key} --content-type \"text/plain\""
+    environment = {
+      AWS_ENDPOINT_URL_S3 = var.aws_endpoint_url_s3
+    }
   }
 
   triggers = {
@@ -80,9 +86,6 @@ resource "null_resource" "bucket_empty" {
   triggers = {
     bucket = aws_s3_bucket.lambda_assets.bucket
   }
-  depends_on = [
-    aws_s3_bucket.lambda_assets
-  ]
   provisioner "local-exec" {
     when    = destroy
     command = "aws s3 rm s3://${self.triggers.bucket} --recursive"
