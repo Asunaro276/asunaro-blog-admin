@@ -12,6 +12,6 @@ packages:
   admin_api_server/internal/controller:
     interfaces:
       getContents:
-  admin_api_server/internal/usecase:
+  admin_api_server/internal/usecase/content:
     interfaces:
       getContents:
