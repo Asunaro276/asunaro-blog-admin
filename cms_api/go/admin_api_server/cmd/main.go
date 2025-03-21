@@ -6,7 +6,6 @@ import (
 	usecase "admin_api_server/internal/usecase/content"
 	"admin_api_server/internal/usecase/healthcheck"
 	"context"
-	"log"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -18,8 +17,6 @@ import (
 var echoLambda *echoadapter.EchoLambda
 
 func init() {
-	log.Printf("echo cold start")
-
 	e := echo.New()
 	e.Use(middleware.Recover())
 
