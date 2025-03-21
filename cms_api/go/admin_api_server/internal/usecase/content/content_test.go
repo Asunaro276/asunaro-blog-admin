@@ -3,11 +3,14 @@ package usecase
 import (
 	"admin/model"
 	"errors"
+	"fmt"
+	"math/rand/v2"
 	"testing"
 	"time"
 
 	"admin_api_server/internal/controller/mocks"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,19 +21,33 @@ type contentsUsecaseTestSuite struct {
 	mockRepository *mocks.GetContents
 }
 
+func randomContent(timeInt int64) *model.Content {
+	return &model.Content{
+		ID:        uuid.New().String(),
+		Title:     fmt.Sprintf("test title %d", timeInt),
+		Body:      fmt.Sprintf("test body %d", timeInt),
+		Author:    fmt.Sprintf("test author %d", timeInt),
+		CreatedAt: time.Unix(timeInt, 0),
+		UpdatedAt: time.Unix(timeInt, 0),
+	}
+}
+
 // TestContentsControllerを実行（テストメインエントリーポイント）
 func TestContentsUsecase(t *testing.T) {
 	suite.Run(t, new(contentsUsecaseTestSuite))
 }
 
 // 各テスト実行前のセットアップ
-func (s *contentsUsecaseTestSuite) SetupTest() {
+func (s *contentsUsecaseTestSuite) SetupSubTest() {
 	s.mockRepository = mocks.NewGetContents(s.T())
 	s.usecase = NewContentUsecase(s.mockRepository)
 }
 
 // GetContentsのテスト
 func (s *contentsUsecaseTestSuite) TestGetContents() {
+	randomInt := rand.Int64()
+	content1 := randomContent(randomInt)
+	content2 := randomContent(randomInt + 1)
 	testCases := []struct {
 		name          string
 		setup         func()
@@ -40,43 +57,12 @@ func (s *contentsUsecaseTestSuite) TestGetContents() {
 		{
 			name: "正常系：コンテンツが正常に取得できる場合",
 			setup: func() {
-				contents := []model.Content{
-					{
-						ID:        "1",
-						Title:     "テストタイトル1",
-						Body:      "テスト本文1",
-						Author:    "テスト著者1",
-						CreatedAt: time.Now(),
-						UpdatedAt: time.Now(),
-					},
-					{
-						ID:        "2",
-						Title:     "テストタイトル2",
-						Body:      "テスト本文2",
-						Author:    "テスト著者2",
-						CreatedAt: time.Now(),
-						UpdatedAt: time.Now(),
-					},
-				}
+				contents := []model.Content{*content1, *content2}
 				s.mockRepository.EXPECT().GetContents().Return(contents, nil)
 			},
 			expectedData: []model.Content{
-				{
-					ID:        "1",
-					Title:     "テストタイトル1",
-					Body:      "テスト本文1",
-					Author:    "テスト著者1",
-					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
-				},
-				{
-					ID:        "2",
-					Title:     "テストタイトル2",
-					Body:      "テスト本文2",
-					Author:    "テスト著者2",
-					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
-				},
+				*content1,
+				*content2,
 			},
 			expectedError: nil,
 		},
