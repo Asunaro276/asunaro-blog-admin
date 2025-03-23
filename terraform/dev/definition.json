@@ -1,0 +1,1159 @@
+{
+  "ModelName": "CMS",
+  "ModelMetadata": {
+    "Author": "DynamoDB設計チーム",
+    "DateCreated": "2023-12-10T12:00:00Z",
+    "DateLastModified": "2023-12-10T12:00:00Z",
+    "Description": "ブログCMS用のDynamoDBシングルテーブルデザイン",
+    "Version": "1.0"
+  },
+  "DataModel": [
+    {
+      "TableName": "Contents",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "PK",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "SK",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "title",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "description",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "content",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "coverImage",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "publishedAt",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "updatedAt",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "status",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "categoryID",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "categoryName",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "tagName",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "articleCount",
+          "AttributeType": "N"
+        },
+        {
+          "AttributeName": "GSI1PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1SK",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "GSI1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GSI1PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GSI1SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1001"
+          },
+          "GSI1PK": {
+            "S": "article"
+          },
+          "GSI1SK": {
+            "S": "2023-12-01T10:00:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "DynamoDBの基本"
+          },
+          "description": {
+            "S": "DynamoDBの基本概念について説明します"
+          },
+          "content": {
+            "S": "DynamoDBはAWSが提供するNoSQLデータベースサービスです..."
+          },
+          "coverImage": {
+            "S": "images/dynamodb-basics.jpg"
+          },
+          "publishedAt": {
+            "S": "2023-12-01T10:00:00Z"
+          },
+          "updatedAt": {
+            "S": "2023-12-01T10:00:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c001"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1001#category"
+          },
+          "GSI1PK": {
+            "S": "c#c001"
+          },
+          "GSI1SK": {
+            "S": "2023-12-01T10:00:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "DynamoDBの基本"
+          },
+          "description": {
+            "S": "DynamoDBの基本概念について説明します"
+          },
+          "content": {
+            "S": "DynamoDBはAWSが提供するNoSQLデータベースサービスです..."
+          },
+          "coverImage": {
+            "S": "images/dynamodb-basics.jpg"
+          },
+          "publishedAt": {
+            "S": "2023-12-01T10:00:00Z"
+          },
+          "updatedAt": {
+            "S": "2023-12-01T10:00:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c001"
+          },
+          "categoryName": {
+            "S": "データベース"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1002"
+          },
+          "GSI1PK": {
+            "S": "article"
+          },
+          "GSI1SK": {
+            "S": "2023-12-05T14:30:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "シングルテーブル設計のメリット"
+          },
+          "description": {
+            "S": "DynamoDBのシングルテーブル設計のメリットについて"
+          },
+          "content": {
+            "S": "シングルテーブル設計は効率的なクエリを可能にします..."
+          },
+          "coverImage": {
+            "S": "images/single-table.jpg"
+          },
+          "publishedAt": {
+            "S": "2023-12-05T14:30:00Z"
+          },
+          "updatedAt": {
+            "S": "2023-12-05T15:45:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c001"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1002#category"
+          },
+          "GSI1PK": {
+            "S": "c#c001"
+          },
+          "GSI1SK": {
+            "S": "2023-12-05T14:30:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "シングルテーブル設計のメリット"
+          },
+          "description": {
+            "S": "DynamoDBのシングルテーブル設計のメリットについて"
+          },
+          "content": {
+            "S": "シングルテーブル設計は効率的なクエリを可能にします..."
+          },
+          "coverImage": {
+            "S": "images/single-table.jpg"
+          },
+          "publishedAt": {
+            "S": "2023-12-05T14:30:00Z"
+          },
+          "updatedAt": {
+            "S": "2023-12-05T15:45:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c001"
+          },
+          "categoryName": {
+            "S": "データベース"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1003"
+          },
+          "GSI1PK": {
+            "S": "article"
+          },
+          "GSI1SK": {
+            "S": "2023-12-10T09:15:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "Next.jsとVercelのデプロイ"
+          },
+          "description": {
+            "S": "Next.jsアプリケーションをVercelにデプロイする方法"
+          },
+          "content": {
+            "S": "VercelはNext.jsアプリケーションのデプロイを簡単にします..."
+          },
+          "coverImage": {
+            "S": "images/nextjs-vercel.jpg"
+          },
+          "publishedAt": {
+            "S": "2023-12-10T09:15:00Z"
+          },
+          "updatedAt": {
+            "S": "2023-12-10T09:15:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c002"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1003#category"
+          },
+          "GSI1PK": {
+            "S": "c#c002"
+          },
+          "GSI1SK": {
+            "S": "2023-12-10T09:15:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "Next.jsとVercelのデプロイ"
+          },
+          "description": {
+            "S": "Next.jsアプリケーションをVercelにデプロイする方法"
+          },
+          "content": {
+            "S": "VercelはNext.jsアプリケーションのデプロイを簡単にします..."
+          },
+          "coverImage": {
+            "S": "images/nextjs-vercel.jpg"
+          },
+          "publishedAt": {
+            "S": "2023-12-10T09:15:00Z"
+          },
+          "updatedAt": {
+            "S": "2023-12-10T09:15:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c002"
+          },
+          "categoryName": {
+            "S": "フロントエンド"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1004"
+          },
+          "GSI1PK": {
+            "S": "article"
+          },
+          "GSI1SK": {
+            "S": "2023-11-15T08:30:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "ReactとTypeScriptの始め方"
+          },
+          "description": {
+            "S": "ReactとTypeScriptを使った開発の基本"
+          },
+          "content": {
+            "S": "ReactとTypeScriptを組み合わせると型安全なコンポーネント開発が可能になります..."
+          },
+          "coverImage": {
+            "S": "images/react-typescript.jpg"
+          },
+          "publishedAt": {
+            "S": "2023-11-15T08:30:00Z"
+          },
+          "updatedAt": {
+            "S": "2023-11-15T10:20:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c002"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1004#category"
+          },
+          "GSI1PK": {
+            "S": "c#c002"
+          },
+          "GSI1SK": {
+            "S": "2023-11-15T08:30:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "ReactとTypeScriptの始め方"
+          },
+          "description": {
+            "S": "ReactとTypeScriptを使った開発の基本"
+          },
+          "content": {
+            "S": "ReactとTypeScriptを組み合わせると型安全なコンポーネント開発が可能になります..."
+          },
+          "coverImage": {
+            "S": "images/react-typescript.jpg"
+          },
+          "publishedAt": {
+            "S": "2023-11-15T08:30:00Z"
+          },
+          "updatedAt": {
+            "S": "2023-11-15T10:20:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c002"
+          },
+          "categoryName": {
+            "S": "フロントエンド"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1005"
+          },
+          "GSI1PK": {
+            "S": "article"
+          },
+          "GSI1SK": {
+            "S": "2024-01-05T11:20:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "AWSのサーバーレスアーキテクチャ"
+          },
+          "description": {
+            "S": "AWSを使ったサーバーレスアプリケーションの構築方法"
+          },
+          "content": {
+            "S": "Lambda、API Gateway、DynamoDBを組み合わせたサーバーレスアーキテクチャについて解説します..."
+          },
+          "coverImage": {
+            "S": "images/aws-serverless.jpg"
+          },
+          "publishedAt": {
+            "S": "2024-01-05T11:20:00Z"
+          },
+          "updatedAt": {
+            "S": "2024-01-05T11:20:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c003"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1005#category"
+          },
+          "GSI1PK": {
+            "S": "c#c003"
+          },
+          "GSI1SK": {
+            "S": "2024-01-05T11:20:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "AWSのサーバーレスアーキテクチャ"
+          },
+          "description": {
+            "S": "AWSを使ったサーバーレスアプリケーションの構築方法"
+          },
+          "content": {
+            "S": "Lambda、API Gateway、DynamoDBを組み合わせたサーバーレスアーキテクチャについて解説します..."
+          },
+          "coverImage": {
+            "S": "images/aws-serverless.jpg"
+          },
+          "publishedAt": {
+            "S": "2024-01-05T11:20:00Z"
+          },
+          "updatedAt": {
+            "S": "2024-01-05T11:20:00Z"
+          },
+          "status": {
+            "S": "published"
+          },
+          "categoryID": {
+            "S": "c003"
+          },
+          "categoryName": {
+            "S": "サーバーレス"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1006"
+          },
+          "GSI1PK": {
+            "S": "article"
+          },
+          "GSI1SK": {
+            "S": "2024-01-10T16:45:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "GraphQLの基礎と実践"
+          },
+          "description": {
+            "S": "GraphQLを使ったAPIの設計と実装"
+          },
+          "content": {
+            "S": "GraphQLはRESTに代わる新しいAPI設計パラダイムです..."
+          },
+          "coverImage": {
+            "S": "images/graphql.jpg"
+          },
+          "publishedAt": {
+            "S": "2024-01-10T16:45:00Z"
+          },
+          "updatedAt": {
+            "S": "2024-01-12T09:30:00Z"
+          },
+          "status": {
+            "S": "draft"
+          },
+          "categoryID": {
+            "S": "c004"
+          }
+        },
+        {
+          "PK": {
+            "S": "article"
+          },
+          "SK": {
+            "S": "a#1006#category"
+          },
+          "GSI1PK": {
+            "S": "c#c004"
+          },
+          "GSI1SK": {
+            "S": "2024-01-10T16:45:00Z"
+          },
+          "type": {
+            "S": "article"
+          },
+          "title": {
+            "S": "GraphQLの基礎と実践"
+          },
+          "description": {
+            "S": "GraphQLを使ったAPIの設計と実装"
+          },
+          "content": {
+            "S": "GraphQLはRESTに代わる新しいAPI設計パラダイムです..."
+          },
+          "coverImage": {
+            "S": "images/graphql.jpg"
+          },
+          "publishedAt": {
+            "S": "2024-01-10T16:45:00Z"
+          },
+          "updatedAt": {
+            "S": "2024-01-12T09:30:00Z"
+          },
+          "status": {
+            "S": "draft"
+          },
+          "categoryID": {
+            "S": "c004"
+          },
+          "categoryName": {
+            "S": "APIデザイン"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1001"
+          },
+          "SK": {
+            "S": "t#t001"
+          },
+          "GSI1PK": {
+            "S": "t#t001"
+          },
+          "GSI1SK": {
+            "S": "2023-12-01T10:00:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "DynamoDBの基本"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1001"
+          },
+          "SK": {
+            "S": "t#t003"
+          },
+          "GSI1PK": {
+            "S": "t#t003"
+          },
+          "GSI1SK": {
+            "S": "2023-12-01T10:00:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "DynamoDBの基本"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1002"
+          },
+          "SK": {
+            "S": "t#t001"
+          },
+          "GSI1PK": {
+            "S": "t#t001"
+          },
+          "GSI1SK": {
+            "S": "2023-12-05T14:30:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "シングルテーブル設計のメリット"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1002"
+          },
+          "SK": {
+            "S": "t#t002"
+          },
+          "GSI1PK": {
+            "S": "t#t002"
+          },
+          "GSI1SK": {
+            "S": "2023-12-05T14:30:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "シングルテーブル設計のメリット"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1003"
+          },
+          "SK": {
+            "S": "t#t002"
+          },
+          "GSI1PK": {
+            "S": "t#t002"
+          },
+          "GSI1SK": {
+            "S": "2023-12-10T09:15:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "Next.jsとVercelのデプロイ"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1003"
+          },
+          "SK": {
+            "S": "t#t004"
+          },
+          "GSI1PK": {
+            "S": "t#t004"
+          },
+          "GSI1SK": {
+            "S": "2023-12-10T09:15:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "Next.jsとVercelのデプロイ"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1004"
+          },
+          "SK": {
+            "S": "t#t004"
+          },
+          "GSI1PK": {
+            "S": "t#t004"
+          },
+          "GSI1SK": {
+            "S": "2023-11-15T08:30:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "ReactとTypeScriptの始め方"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1004"
+          },
+          "SK": {
+            "S": "t#t005"
+          },
+          "GSI1PK": {
+            "S": "t#t005"
+          },
+          "GSI1SK": {
+            "S": "2023-11-15T08:30:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "ReactとTypeScriptの始め方"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1005"
+          },
+          "SK": {
+            "S": "t#t002"
+          },
+          "GSI1PK": {
+            "S": "t#t002"
+          },
+          "GSI1SK": {
+            "S": "2024-01-05T11:20:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "AWSのサーバーレスアーキテクチャ"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1005"
+          },
+          "SK": {
+            "S": "t#t006"
+          },
+          "GSI1PK": {
+            "S": "t#t006"
+          },
+          "GSI1SK": {
+            "S": "2024-01-05T11:20:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "AWSのサーバーレスアーキテクチャ"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1006"
+          },
+          "SK": {
+            "S": "t#t007"
+          },
+          "GSI1PK": {
+            "S": "t#t007"
+          },
+          "GSI1SK": {
+            "S": "2024-01-10T16:45:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "GraphQLの基礎と実践"
+          }
+        },
+        {
+          "PK": {
+            "S": "a#1006"
+          },
+          "SK": {
+            "S": "t#t008"
+          },
+          "GSI1PK": {
+            "S": "t#t008"
+          },
+          "GSI1SK": {
+            "S": "2024-01-10T16:45:00Z"
+          },
+          "type": {
+            "S": "article_tag"
+          },
+          "title": {
+            "S": "GraphQLの基礎と実践"
+          }
+        },
+        {
+          "PK": {
+            "S": "category"
+          },
+          "SK": {
+            "S": "c001"
+          },
+          "GSI1PK": {
+            "S": "category"
+          },
+          "GSI1SK": {
+            "S": "データベース"
+          },
+          "type": {
+            "S": "category"
+          },
+          "categoryName": {
+            "S": "データベース"
+          }
+        },
+        {
+          "PK": {
+            "S": "category"
+          },
+          "SK": {
+            "S": "c002"
+          },
+          "GSI1PK": {
+            "S": "category"
+          },
+          "GSI1SK": {
+            "S": "フロントエンド"
+          },
+          "type": {
+            "S": "category"
+          },
+          "categoryName": {
+            "S": "フロントエンド"
+          }
+        },
+        {
+          "PK": {
+            "S": "category"
+          },
+          "SK": {
+            "S": "c003"
+          },
+          "GSI1PK": {
+            "S": "category"
+          },
+          "GSI1SK": {
+            "S": "サーバーレス"
+          },
+          "type": {
+            "S": "category"
+          },
+          "categoryName": {
+            "S": "サーバーレス"
+          }
+        },
+        {
+          "PK": {
+            "S": "category"
+          },
+          "SK": {
+            "S": "c004"
+          },
+          "GSI1PK": {
+            "S": "category"
+          },
+          "GSI1SK": {
+            "S": "APIデザイン"
+          },
+          "type": {
+            "S": "category"
+          },
+          "categoryName": {
+            "S": "APIデザイン"
+          }
+        },
+        {
+          "PK": {
+            "S": "tag"
+          },
+          "SK": {
+            "S": "t001"
+          },
+          "GSI1PK": {
+            "S": "tag"
+          },
+          "GSI1SK": {
+            "S": "DynamoDB"
+          },
+          "type": {
+            "S": "tag"
+          },
+          "tagName": {
+            "S": "DynamoDB"
+          },
+          "articleCount": {
+            "N": "2"
+          }
+        },
+        {
+          "PK": {
+            "S": "tag"
+          },
+          "SK": {
+            "S": "t002"
+          },
+          "GSI1PK": {
+            "S": "tag"
+          },
+          "GSI1SK": {
+            "S": "AWS"
+          },
+          "type": {
+            "S": "tag"
+          },
+          "tagName": {
+            "S": "AWS"
+          },
+          "articleCount": {
+            "N": "3"
+          }
+        },
+        {
+          "PK": {
+            "S": "tag"
+          },
+          "SK": {
+            "S": "t003"
+          },
+          "GSI1PK": {
+            "S": "tag"
+          },
+          "GSI1SK": {
+            "S": "NoSQL"
+          },
+          "type": {
+            "S": "tag"
+          },
+          "tagName": {
+            "S": "NoSQL"
+          },
+          "articleCount": {
+            "N": "1"
+          }
+        },
+        {
+          "PK": {
+            "S": "tag"
+          },
+          "SK": {
+            "S": "t004"
+          },
+          "GSI1PK": {
+            "S": "tag"
+          },
+          "GSI1SK": {
+            "S": "Next.js"
+          },
+          "type": {
+            "S": "tag"
+          },
+          "tagName": {
+            "S": "Next.js"
+          },
+          "articleCount": {
+            "N": "2"
+          }
+        },
+        {
+          "PK": {
+            "S": "tag"
+          },
+          "SK": {
+            "S": "t005"
+          },
+          "GSI1PK": {
+            "S": "tag"
+          },
+          "GSI1SK": {
+            "S": "TypeScript"
+          },
+          "type": {
+            "S": "tag"
+          },
+          "tagName": {
+            "S": "TypeScript"
+          },
+          "articleCount": {
+            "N": "1"
+          }
+        },
+        {
+          "PK": {
+            "S": "tag"
+          },
+          "SK": {
+            "S": "t006"
+          },
+          "GSI1PK": {
+            "S": "tag"
+          },
+          "GSI1SK": {
+            "S": "サーバーレス"
+          },
+          "type": {
+            "S": "tag"
+          },
+          "tagName": {
+            "S": "サーバーレス"
+          },
+          "articleCount": {
+            "N": "1"
+          }
+        },
+        {
+          "PK": {
+            "S": "tag"
+          },
+          "SK": {
+            "S": "t007"
+          },
+          "GSI1PK": {
+            "S": "tag"
+          },
+          "GSI1SK": {
+            "S": "GraphQL"
+          },
+          "type": {
+            "S": "tag"
+          },
+          "tagName": {
+            "S": "GraphQL"
+          },
+          "articleCount": {
+            "N": "1"
+          }
+        },
+        {
+          "PK": {
+            "S": "tag"
+          },
+          "SK": {
+            "S": "t008"
+          },
+          "GSI1PK": {
+            "S": "tag"
+          },
+          "GSI1SK": {
+            "S": "API"
+          },
+          "type": {
+            "S": "tag"
+          },
+          "tagName": {
+            "S": "API"
+          },
+          "articleCount": {
+            "N": "1"
+          }
+        },
+        {
+          "PK": {
+            "S": "y#2023"
+          },
+          "SK": {
+            "S": "m#11"
+          },
+          "type": {
+            "S": "date_stats"
+          },
+          "articleCount": {
+            "N": "1"
+          }
+        },
+        {
+          "PK": {
+            "S": "y#2023"
+          },
+          "SK": {
+            "S": "m#12"
+          },
+          "type": {
+            "S": "date_stats"
+          },
+          "articleCount": {
+            "N": "3"
+          }
+        },
+        {
+          "PK": {
+            "S": "y#2024"
+          },
+          "SK": {
+            "S": "m#01"
+          },
+          "type": {
+            "S": "date_stats"
+          },
+          "articleCount": {
+            "N": "2"
+          }
+        }
+      ]
+    }
+  ]
+}

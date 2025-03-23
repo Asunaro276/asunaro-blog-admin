@@ -57,6 +57,27 @@ erDiagram
 - getTagsWithArticleCount
 - getDateRangeWithArticleCount
 
+
+## テーブル設計
+### ベーステーブル
+| PK                  | SK                   | GSI1PK             | GSI1SK                 | タイプ属性と他のメタデータ                      |
+|---------------------|----------------------|--------------------|------------------------|----------------------------------------------|
+| ARTICLE             | ARTICLE#\<articleID\>  | ARTICLE            | \<publishedAt\>          | type: article, title, description, content, ... |
+| ARTICLE             | ARTICLE#\<articleID\>  | CAT#\<categoryID\>   | \<publishedAt\>          | type: article, title, description, content, ... |
+| ARTICLE#\<articleID\> | TAG#\<tagID\>          | TAG#\<tagID\>        | \<publishedAt\>          | type: article_tag, title                     |
+| CATEGORY            | \<categoryID\>         | CATEGORY           | \<categoryName\>         | type: category, name                         |
+| TAG                 | \<tagID\>              | TAG                | \<tagName\>              | type: tag, name, articleCount                |
+| YEAR#\<year\>         | MONTH#\<month\>        |                    |                        | type: date_stats, articleCount               |
+
+### グローバルセカンダリインデックス（GSI1）
+| GSI1PK                  | GSI1SK              | 他の属性                |
+|-------------------------|---------------------|-------------------------|
+| ARTICLE                 | &lt;publishedAt&gt; | 全記事属性              |
+| CAT#&lt;categoryID&gt;  | &lt;publishedAt&gt; | 全記事属性              |
+| TAG#&lt;tagID&gt;       | &lt;publishedAt&gt; | 全記事属性              |
+| CATEGORY                | &lt;categoryName&gt;| type: category, name    |
+| TAG                     | &lt;tagName&gt;     | type: tag, name, articleCount |
+
 ## スキーマ設計
 ```json
 {
