@@ -16,6 +16,13 @@ resource "aws_api_gateway_method" "cms" {
   authorization = "NONE"
 }
 
+resource "aws_api_gateway_method" "cms_root" {
+  rest_api_id   = aws_api_gateway_rest_api.cms.id
+  resource_id   = aws_api_gateway_rest_api.cms.root_resource_id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
 resource "aws_api_gateway_integration" "cms" {
   rest_api_id = aws_api_gateway_rest_api.cms.id
   resource_id = aws_api_gateway_resource.cms.id
@@ -26,10 +33,30 @@ resource "aws_api_gateway_integration" "cms" {
   uri                     = aws_lambda_function.cms.invoke_arn
 }
 
+resource "aws_api_gateway_integration" "cms_root" {
+  rest_api_id = aws_api_gateway_rest_api.cms.id
+  resource_id = aws_api_gateway_rest_api.cms.root_resource_id
+  http_method = aws_api_gateway_method.cms_root.http_method
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.cms.invoke_arn
+}
+
 resource "aws_api_gateway_method_response" "response_200" {
   rest_api_id = aws_api_gateway_rest_api.cms.id
   resource_id = aws_api_gateway_resource.cms.id
   http_method = aws_api_gateway_method.cms.http_method
+  status_code = "200"
+  response_models = {
+    "application/json" = "Empty"
+  }
+}
+
+resource "aws_api_gateway_method_response" "response_200_root" {
+  rest_api_id = aws_api_gateway_rest_api.cms.id
+  resource_id = aws_api_gateway_rest_api.cms.root_resource_id
+  http_method = aws_api_gateway_method.cms_root.http_method
   status_code = "200"
   response_models = {
     "application/json" = "Empty"
@@ -47,7 +74,7 @@ resource "aws_lambda_permission" "cms" {
 
 resource "aws_api_gateway_deployment" "cms" {
   rest_api_id = aws_api_gateway_rest_api.cms.id
-  depends_on  = [aws_api_gateway_integration.cms]
+  depends_on  = [aws_api_gateway_integration.cms, aws_api_gateway_integration.cms_root]
 }
 
 resource "aws_api_gateway_stage" "cms" {
