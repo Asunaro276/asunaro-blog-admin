@@ -1,6 +1,7 @@
 package main
 
 import (
+	"admin/infrastructure"
 	"admin/infrastructure/repository"
 	"admin_api_server/internal/controller"
 	usecase "admin_api_server/internal/usecase/content"
@@ -20,8 +21,9 @@ func init() {
 	e := echo.New()
 	e.Use(middleware.Recover())
 
+	dbClient, _ := infrastructure.NewDynamoDBClient()
 	// リポジトリの初期化
-	contentRepository := repository.NewContentRepository()
+	contentRepository := repository.NewContentRepository(dbClient)
 
 	// ユースケースの初期化
 	contentUsecase := usecase.NewContentUsecase(contentRepository)

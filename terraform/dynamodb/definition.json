@@ -34,7 +34,7 @@
           "AttributeType": "S"
         },
         {
-          "AttributeName": "content",
+          "AttributeName": "body",
           "AttributeType": "S"
         },
         {

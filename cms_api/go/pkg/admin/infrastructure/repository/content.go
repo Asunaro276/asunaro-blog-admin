@@ -1,92 +1,61 @@
 package repository
 
 import (
+	"admin/infrastructure"
 	"admin/model"
 	"time"
 )
 
 // contentRepository はContentRepositoryの実装です
 type contentRepository struct {
-	// ここにデータベース接続などの依存関係を追加することができます
-	// db *sql.DB
+	dbClient  *infrastructure.DynamoDBClient
+	tableName string
+}
+
+// ContentItem はDynamoDBに保存するコンテンツアイテムの構造体です
+type ContentItem struct {
+	PK           string    `dynamodbav:"PK"`
+	SK           string    `dynamodbav:"SK"`
+	Type         string    `dynamodbav:"type"`
+	Title        string    `dynamodbav:"title"`
+	Description  string    `dynamodbav:"description"`
+	Body         string    `dynamodbav:"body"`
+	CoverImage   string    `dynamodbav:"coverImage"`
+	PublishedAt  time.Time `dynamodbav:"publishedAt"`
+	UpdatedAt    time.Time `dynamodbav:"updatedAt"`
+	Status       string    `dynamodbav:"status"`
+	CategoryID   string    `dynamodbav:"categoryID"`
+	CategoryName string    `dynamodbav:"categoryName"`
+	TagName      string    `dynamodbav:"tagName"`
+	ArticleCount int       `dynamodbav:"articleCount"`
+	GSI1PK       string    `dynamodbav:"GSI1PK"`
+	GSI1SK       string    `dynamodbav:"GSI1SK"`
 }
 
 // NewContentRepository は新しいContentRepositoryインスタンスを作成します
-func NewContentRepository() *contentRepository {
+func NewContentRepository(dbClient *infrastructure.DynamoDBClient) *contentRepository {
 	return &contentRepository{
-		// ここでデータベース接続などの依存関係を注入することができます
-		// db: db,
+		dbClient:  dbClient,
+		tableName: "Contents",
 	}
 }
 
-// GetContent はコンテンツを取得します
-func (cr *contentRepository) GetContents() ([]model.Content, error) {
-	// 実際の実装ではデータベースからデータを取得します
-	// ここではサンプルデータを返します
-	now := time.Now()
-	contents := []model.Content{
-		{
-			ID:        "1",
-			Title:     "サンプルコンテンツ1",
-			Body:      "これはサンプルコンテンツ1です。",
-			Author:    "管理者",
-			CreatedAt: now.Add(-24 * time.Hour),
-			UpdatedAt: now,
-		},
-		{
-			ID:        "2",
-			Title:     "サンプルコンテンツ2",
-			Body:      "これはサンプルコンテンツ2です。",
-			Author:    "管理者",
-			CreatedAt: now.Add(-48 * time.Hour),
-			UpdatedAt: now.Add(-24 * time.Hour),
-		},
-	}
-
-	return contents, nil
-}
-
-// ListContents はコンテンツのリストを取得します
-func (cr *contentRepository) ListContents() ([]*model.Content, error) {
-	// 実際の実装ではデータベースからデータを取得します
-	// ここではサンプルデータを返します
-	now := time.Now()
-	contents := []*model.Content{
-		{
-			ID:        "1",
-			Title:     "サンプルコンテンツ1",
-			Body:      "これはサンプルコンテンツ1です。",
-			Author:    "管理者",
-			CreatedAt: now.Add(-24 * time.Hour),
-			UpdatedAt: now,
-		},
-		{
-			ID:        "2",
-			Title:     "サンプルコンテンツ2",
-			Body:      "これはサンプルコンテンツ2です。",
-			Author:    "管理者",
-			CreatedAt: now.Add(-48 * time.Hour),
-			UpdatedAt: now.Add(-24 * time.Hour),
-		},
-	}
-
-	return contents, nil
+// GetArticles はコンテンツのリストを取得します
+func (cr *contentRepository) GetArticles() ([]model.Article, error) {
+	panic("not implemented")
 }
 
 // CreateContent は新しいコンテンツを作成します
-func (cr *contentRepository) CreateContent(content *model.Content) error {
-	// 実際の実装ではデータベースにデータを保存します
-	return nil
+func (cr *contentRepository) CreateContent(content *model.Article) error {
+	panic("not implemented")
 }
 
 // UpdateContent はコンテンツを更新します
-func (cr *contentRepository) UpdateContent(content *model.Content) error {
-	// 実際の実装ではデータベースのデータを更新します
-	return nil
+func (cr *contentRepository) UpdateContent(content *model.Article) error {
+	panic("not implemented")
 }
 
 // DeleteContent はコンテンツを削除します
 func (cr *contentRepository) DeleteContent(id string) error {
-	// 実際の実装ではデータベースからデータを削除します
-	return nil
+	panic("not implemented")
 }
