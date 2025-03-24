@@ -1,9 +1,11 @@
 # definition.jsonからデータを読み込む
 locals {
-  definition_json = jsondecode(file("${path.module}/definition.json"))
+  definition_json = jsondecode(file("${path.module}/../dynamodb/definition.json"))
   data_model      = local.definition_json.DataModel[0]
   table_name      = local.data_model.TableName
-  table_data      = local.data_model.TableData
+
+  # CSVデータを読み込む（tabledata.csvから）
+  csv_data = csvdecode(file("${path.module}/../dynamodb/tabledata.csv"))
 
   # パーティションキー/ソートキーの情報
   partition_key = local.data_model.KeyAttributes.PartitionKey
@@ -26,8 +28,37 @@ locals {
     ]
   ]))
 
+  # CSVデータをDynamoDB形式に変換
+  dynamodb_items = [
+    for item in local.csv_data : {
+      PK           = { S = item.PK }
+      SK           = { S = item.SK }
+      type         = item.type != "" ? { S = item.type } : null
+      title        = item.title != "" ? { S = item.title } : null
+      description  = item.description != "" ? { S = item.description } : null
+      content      = item.content != "" ? { S = item.content } : null
+      coverImage   = item.coverImage != "" ? { S = item.coverImage } : null
+      publishedAt  = item.publishedAt != "" ? { S = item.publishedAt } : null
+      updatedAt    = item.updatedAt != "" ? { S = item.updatedAt } : null
+      status       = item.status != "" ? { S = item.status } : null
+      categoryID   = item.categoryID != "" ? { S = item.categoryID } : null
+      categoryName = item.categoryName != "" ? { S = item.categoryName } : null
+      tagName      = item.tagName != "" ? { S = item.tagName } : null
+      articleCount = item.articleCount != "" ? { N = item.articleCount } : null
+      GSI1PK       = item.GSI1PK != "" ? { S = item.GSI1PK } : null
+      GSI1SK       = item.GSI1SK != "" ? { S = item.GSI1SK } : null
+    }
+  ]
+
+  # nullの属性を削除してクリーンアップしたアイテムを作成
+  cleaned_items = [
+    for item in local.dynamodb_items : {
+      for k, v in item : k => v if v != null
+    }
+  ]
+
   # アイテムのユニークキーを生成（PKとSKの組み合わせ）
-  items_map = { for item in local.table_data : "${item.PK.S}_${item.SK.S}" => item }
+  items_map = { for item in local.cleaned_items : "${item.PK.S}_${item.SK.S}" => item }
 }
 
 # definition.jsonからDynamoDBテーブルを定義
@@ -81,7 +112,7 @@ resource "aws_dynamodb_table" "cms" {
   }
 }
 
-# for_eachを使ってすべてのデータを追加
+# tabledata.csvから読み込んだデータを使用してアイテムを追加
 resource "aws_dynamodb_table_item" "cms_items" {
   for_each = local.items_map
 
