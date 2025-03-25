@@ -1,0 +1,46 @@
+---
+  name: Development
+  description: "Run infrastructure, application, and build tests on development branch"
+
+  on:
+    push:
+      branches-ignore:
+        - main
+  jobs:
+    lint:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: golangci/golangci-lint-action@v3
+          with:
+            version: latest
+
+    unit-test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: actions/setup-go@v3
+          with:
+            go-version: 1.24
+        - run: go test -v ./...
+
+    terraform:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: hashicorp/setup-terraform@v3
+          with:
+            terraform-version: 1.5.5
+        - run: terraform init
+        - run: terraform validate
+        - run: terraform plan
+            
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: actions/setup-go@v3
+          with:
+            go-version: 1.24
+        - run: go build -v ./...
+    
