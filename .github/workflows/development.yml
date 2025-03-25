@@ -7,40 +7,84 @@
       branches-ignore:
         - main
   jobs:
-    lint:
+    changes:
+      runs-on: ubuntu-latest
+      permissions:
+        pull-requests: write
+      outputs:
+        cms_api: ${{ steps.filter.outputs.cms_api }}
+        other: ${{ steps.filter.outputs.other }}
+      steps:
+        - uses: dorny/paths-filter@v2
+          id: filter
+          with:
+            filters: |
+              cms_api:
+                - 'cms_api/go/admin_api_server/**'
+                - 'cms_api/go/pkg/**'
+              other:
+                - 'terraform/**'
+                - 'docker-compose.yml'
+  
+    lint_and_test:
+      needs: changes
+      if: ${{ needs.changes.outputs.cms_api == 'true' }}
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          dir: 
+            - 'cms_api/go/admin_api_server'
+            - 'cms_api/go/pkg/admin'
+      steps:
+        - uses: actions/checkout@v4
+        
+        - name: Set up Go
+          uses: actions/setup-go@v5
+          with:
+            go-version-file: './{matrix.dir}/go.mod'
+            cache-dependency-path: ./{matrix.dir}/go.sum
+        
+        - name: Lint
+          working-directory: cms_api/go
+          run: |
+            go install golang.org/x/lint/golint@latest
+            golint ./...
+        
+        - name: Test
+          working-directory: cms_api/go
+          run: go test -v ./...
+  
+    terraform_check:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v3
-        - uses: golangci/golangci-lint-action@v3
-          with:
-            version: latest
-
-    unit-test:
+        
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v2
+        
+        - name: Terraform Init
+          run: terraform init
+        
+        - name: Terraform Plan
+          run: terraform plan -input=false
+  
+    set_merge_ready:
+      needs: [changes, lint_and_test, terraform_check]
+      runs-on: ubuntu-latest
+      outputs:
+        merge_ready: ${{ steps.set_var.outputs.merge_ready }}
+      steps:
+        - id: set_var
+          run: echo "merge_ready=true" >> $GITHUB_OUTPUT
+  
+    merge_ready:
+      needs: set_merge_ready
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v3
-        - uses: actions/setup-go@v3
-          with:
-            go-version: 1.24
-        - run: go test -v ./...
-
-    terraform:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - uses: hashicorp/setup-terraform@v3
-          with:
-            terraform-version: 1.5.5
-        - run: terraform init
-        - run: terraform validate
-        - run: terraform plan
-            
-    build:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - uses: actions/setup-go@v3
-          with:
-            go-version: 1.24
-        - run: go build -v ./...
-    
+        - name: Check if merge ready
+          run: |
+            if [ "${{ needs.set_merge_ready.outputs.merge_ready }}" == "true" ]; then
+              exit 0
+            else
+              exit 1
+            fi
