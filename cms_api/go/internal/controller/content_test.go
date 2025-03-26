@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"admin/model"
+	"cms_api/internal/domain/entity"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"admin_api_server/internal/controller/mocks"
+	"cms_api/internal/usecase/content/mocks"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/suite"
@@ -54,18 +54,17 @@ func (s *contentsControllerTestSuite) TestGetContents() {
 		name           string
 		setup          setupFunc
 		expectedStatus int
-		expectedBody   []model.Content
+		expectedBody   []model.Article
 		expectError    bool
 	}{
 		{
 			name: "正常系：コンテンツが正常に取得できる場合",
 			setup: func(s *contentsControllerTestSuite) {
-				contents := []model.Content{
+				contents := []model.Article{
 					{
 						ID:        "1",
 						Title:     "テストタイトル1",
 						Body:      "テスト本文1",
-						Author:    "テスト著者1",
 						CreatedAt: time.Now(),
 						UpdatedAt: time.Now(),
 					},
@@ -73,26 +72,23 @@ func (s *contentsControllerTestSuite) TestGetContents() {
 						ID:        "2",
 						Title:     "テストタイトル2",
 						Body:      "テスト本文2",
-						Author:    "テスト著者2",
 						CreatedAt: time.Now(),
 						UpdatedAt: time.Now(),
 					},
 				}
-				s.mockUsecase.EXPECT().GetContents().Return(contents, nil)
+				s.mockUsecase.EXPECT().GetArticles().Return(contents, nil)
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: []model.Content{
+			expectedBody: []model.Article{
 				{
 					ID:     "1",
 					Title:  "テストタイトル1",
 					Body:   "テスト本文1",
-					Author: "テスト著者1",
 				},
 				{
 					ID:     "2",
 					Title:  "テストタイトル2",
 					Body:   "テスト本文2",
-					Author: "テスト著者2",
 				},
 			},
 			expectError: false,
@@ -100,7 +96,7 @@ func (s *contentsControllerTestSuite) TestGetContents() {
 		{
 			name: "異常系：コンテンツ取得でエラーが発生する場合",
 			setup: func(s *contentsControllerTestSuite) {
-				s.mockUsecase.EXPECT().GetContents().Return(nil, errors.New("取得エラー"))
+				s.mockUsecase.EXPECT().GetArticles().Return(nil, errors.New("取得エラー"))
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody:   nil,
@@ -141,7 +137,7 @@ func (s *contentsControllerTestSuite) TestGetContents() {
 
 				// レスポンスボディを検証
 				if tc.expectedBody != nil {
-					var responseContents []model.Content
+					var responseContents []model.Article
 					err := json.Unmarshal(rec.Body.Bytes(), &responseContents)
 					s.NoError(err)
 

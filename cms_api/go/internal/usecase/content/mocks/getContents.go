@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	model "admin/model"
+	model "cms_api/internal/domain/entity"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -21,24 +21,24 @@ func (_m *GetContents) EXPECT() *GetContents_Expecter {
 	return &GetContents_Expecter{mock: &_m.Mock}
 }
 
-// GetContents provides a mock function with no fields
-func (_m *GetContents) GetContents() ([]model.Content, error) {
+// GetArticles provides a mock function with no fields
+func (_m *GetContents) GetArticles() ([]model.Article, error) {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetContents")
+		panic("no return value specified for GetArticles")
 	}
 
-	var r0 []model.Content
+	var r0 []model.Article
 	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]model.Content, error)); ok {
+	if rf, ok := ret.Get(0).(func() ([]model.Article, error)); ok {
 		return rf()
 	}
-	if rf, ok := ret.Get(0).(func() []model.Content); ok {
+	if rf, ok := ret.Get(0).(func() []model.Article); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]model.Content)
+			r0 = ret.Get(0).([]model.Article)
 		}
 	}
 
@@ -51,29 +51,29 @@ func (_m *GetContents) GetContents() ([]model.Content, error) {
 	return r0, r1
 }
 
-// GetContents_GetContents_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetContents'
-type GetContents_GetContents_Call struct {
+// GetContents_GetArticles_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetArticles'
+type GetContents_GetArticles_Call struct {
 	*mock.Call
 }
 
-// GetContents is a helper method to define mock.On call
-func (_e *GetContents_Expecter) GetContents() *GetContents_GetContents_Call {
-	return &GetContents_GetContents_Call{Call: _e.mock.On("GetContents")}
+// GetArticles is a helper method to define mock.On call
+func (_e *GetContents_Expecter) GetArticles() *GetContents_GetArticles_Call {
+	return &GetContents_GetArticles_Call{Call: _e.mock.On("GetArticles")}
 }
 
-func (_c *GetContents_GetContents_Call) Run(run func()) *GetContents_GetContents_Call {
+func (_c *GetContents_GetArticles_Call) Run(run func()) *GetContents_GetArticles_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run()
 	})
 	return _c
 }
 
-func (_c *GetContents_GetContents_Call) Return(_a0 []model.Content, _a1 error) *GetContents_GetContents_Call {
+func (_c *GetContents_GetArticles_Call) Return(_a0 []model.Article, _a1 error) *GetContents_GetArticles_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *GetContents_GetContents_Call) RunAndReturn(run func() ([]model.Content, error)) *GetContents_GetContents_Call {
+func (_c *GetContents_GetArticles_Call) RunAndReturn(run func() ([]model.Article, error)) *GetContents_GetArticles_Call {
 	_c.Call.Return(run)
 	return _c
 }

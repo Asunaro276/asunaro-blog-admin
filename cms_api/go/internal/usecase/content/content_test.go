@@ -1,14 +1,14 @@
 package usecase
 
 import (
-	"admin/model"
+	"cms_api/internal/domain/entity"
 	"errors"
 	"fmt"
 	"math/rand/v2"
 	"testing"
 	"time"
 
-	"admin_api_server/internal/controller/mocks"
+	"cms_api/internal/usecase/content/mocks"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -21,12 +21,11 @@ type contentsUsecaseTestSuite struct {
 	mockRepository *mocks.GetContents
 }
 
-func randomContent(timeInt int64) *model.Content {
-	return &model.Content{
+func randomContent(timeInt int64) *model.Article {
+	return &model.Article{
 		ID:        uuid.New().String(),
 		Title:     fmt.Sprintf("test title %d", timeInt),
 		Body:      fmt.Sprintf("test body %d", timeInt),
-		Author:    fmt.Sprintf("test author %d", timeInt),
 		CreatedAt: time.Unix(timeInt, 0),
 		UpdatedAt: time.Unix(timeInt, 0),
 	}
@@ -51,16 +50,16 @@ func (s *contentsUsecaseTestSuite) TestGetContents() {
 	testCases := []struct {
 		name          string
 		setup         func()
-		expectedData  []model.Content
+		expectedData  []model.Article
 		expectedError error
 	}{
 		{
 			name: "正常系：コンテンツが正常に取得できる場合",
 			setup: func() {
-				contents := []model.Content{*content1, *content2}
-				s.mockRepository.EXPECT().GetContents().Return(contents, nil)
+				contents := []model.Article{*content1, *content2}
+				s.mockRepository.EXPECT().GetArticles().Return(contents, nil)
 			},
-			expectedData: []model.Content{
+			expectedData: []model.Article{
 				*content1,
 				*content2,
 			},
@@ -69,7 +68,7 @@ func (s *contentsUsecaseTestSuite) TestGetContents() {
 		{
 			name: "異常系：コンテンツ取得でエラーが発生する場合",
 			setup: func() {
-				s.mockRepository.EXPECT().GetContents().Return(nil, errors.New("取得エラー"))
+				s.mockRepository.EXPECT().GetArticles().Return(nil, errors.New("取得エラー"))
 			},
 			expectedData:  nil,
 			expectedError: errors.New("取得エラー"),
@@ -82,7 +81,7 @@ func (s *contentsUsecaseTestSuite) TestGetContents() {
 			tc.setup()
 
 			// テスト対象のメソッドを実行
-			contents, err := s.usecase.GetContents()
+			contents, err := s.usecase.GetArticles()
 
 			// エラーのアサーション
 			assert.Equal(s.T(), tc.expectedError, err)
@@ -93,7 +92,6 @@ func (s *contentsUsecaseTestSuite) TestGetContents() {
 				assert.Equal(s.T(), tc.expectedData[i].ID, content.ID)
 				assert.Equal(s.T(), tc.expectedData[i].Title, content.Title)
 				assert.Equal(s.T(), tc.expectedData[i].Body, content.Body)
-				assert.Equal(s.T(), tc.expectedData[i].Author, content.Author)
 				assert.True(s.T(), content.CreatedAt.Equal(tc.expectedData[i].CreatedAt))
 				assert.True(s.T(), content.UpdatedAt.Equal(tc.expectedData[i].UpdatedAt))
 			}

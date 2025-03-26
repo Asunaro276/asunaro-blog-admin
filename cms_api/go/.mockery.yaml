@@ -9,9 +9,12 @@ outpkg: "mocks"
 filename: "{{.InterfaceName }}.go"
 
 packages:
-  admin_api_server/internal/controller:
+  cms_api/internal/controller:
     interfaces:
       getContents:
-  admin_api_server/internal/usecase/content:
+  cms_api/internal/usecase/content:
     interfaces:
       getContents:
+  cms_api/internal/infrastructure/repository:
+    interfaces:
+      ContentRepository:

@@ -18,7 +18,7 @@ test-verbose:
 
 # モックを生成
 mock:
-	go tool mockery
+	mockery
 
 # 生成されたファイルをクリーンアップ
 clean:

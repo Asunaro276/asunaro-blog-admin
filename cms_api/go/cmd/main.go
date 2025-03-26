@@ -1,11 +1,11 @@
 package main
 
 import (
-	"admin/infrastructure"
-	"admin/infrastructure/repository"
-	"admin_api_server/internal/controller"
-	usecase "admin_api_server/internal/usecase/content"
-	"admin_api_server/internal/usecase/healthcheck"
+	"cms_api/internal/infrastructure"
+	"cms_api/internal/infrastructure/repository"
+	"cms_api/internal/controller"
+	usecase "cms_api/internal/usecase/content"
+	"cms_api/internal/usecase/healthcheck"
 	"context"
 
 	"github.com/aws/aws-lambda-go/events"

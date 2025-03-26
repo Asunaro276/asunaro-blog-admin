@@ -1,14 +1,14 @@
 package controller
 
 import (
-	"admin/model"
+	"cms_api/internal/domain/entity"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 type getContents interface {
-	GetContents() ([]model.Content, error)
+	GetArticles() ([]model.Article, error)
 }
 
 type ContentController struct {
@@ -27,11 +27,11 @@ func NewContentController(cu getContents) *ContentController {
 // @Tags content
 // @Accept json
 // @Produce json
-// @Success 200 {array} model.Content
+// @Success 200 {array} model.Article
 // @Failure 500 {object} map[string]string
 // @Router / [get]
 func (cc *ContentController) GetContent(c echo.Context) error {
-	contents, err := cc.contentUsecase.GetContents()
+	contents, err := cc.contentUsecase.GetArticles()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"error": err.Error(),

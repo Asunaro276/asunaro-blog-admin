@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"admin/infrastructure"
-	"admin/model"
+	"cms_api/internal/infrastructure"
+	"cms_api/internal/domain/entity"
 	"context"
 	"testing"
 	"time"
@@ -21,7 +21,7 @@ type MockDynamoDBClient struct {
 
 type contentRepositoryTestSuite struct {
 	suite.Suite
-	repo            *contentRepository
+	repo            ContentRepository
 	dynamoContainer *infrastructure.DynamoDBContainer
 	ctx             context.Context
 }
@@ -65,17 +65,17 @@ func (s *contentRepositoryTestSuite) SetupTest() {
 }
 func (s *contentRepositoryTestSuite) createTestContent(id, title, description, body, coverImage, publishedAt, status, categoryID, tagID string) *model.Article {
 	content := &model.Article{
-		ID:           id,
-		Title:        title,
-		Description:  description,
-		Body:         body,
-		CoverImage:   coverImage,
-		PublishedAt:  publishedAt,
-		Status:       status,
-		CategoryID:   categoryID,
-		TagID:        tagID,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
+		ID:          id,
+		Title:       title,
+		Description: description,
+		Body:        body,
+		CoverImage:  coverImage,
+		PublishedAt: publishedAt,
+		Status:      status,
+		CategoryID:  categoryID,
+		TagID:       tagID,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 	err := s.repo.CreateContent(content)
 	s.Require().NoError(err, "テストデータの作成に失敗しました")

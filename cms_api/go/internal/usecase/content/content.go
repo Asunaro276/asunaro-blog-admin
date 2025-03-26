@@ -1,11 +1,11 @@
 package usecase
 
 import (
-	"admin/model"
+	"cms_api/internal/domain/entity"
 )
 
 type getContents interface {
-	GetContents() ([]model.Content, error)
+	GetArticles() ([]model.Article, error)
 }
 
 type contentUsecase struct {
@@ -20,8 +20,8 @@ func NewContentUsecase(getContents getContents) *contentUsecase {
 }
 
 // GetContent はコンテンツを取得します
-func (u *contentUsecase) GetContents() ([]model.Content, error) {
-	contents, err := u.contentRepository.GetContents()
+func (u *contentUsecase) GetArticles() ([]model.Article, error) {
+	contents, err := u.contentRepository.GetArticles()
 	if err != nil {
 		return nil, err
 	}

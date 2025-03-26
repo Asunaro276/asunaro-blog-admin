@@ -1,12 +1,19 @@
 package repository
 
 import (
-	"admin/infrastructure"
-	"admin/model"
+	"cms_api/internal/domain/entity"
+	"cms_api/internal/infrastructure"
 	"time"
 )
 
 // contentRepository はContentRepositoryの実装です
+type ContentRepository interface {
+	GetArticles() ([]model.Article, error)
+	CreateContent(content *model.Article) error
+	UpdateContent(content *model.Article) error
+	DeleteContent(id string) error
+}
+
 type contentRepository struct {
 	dbClient  *infrastructure.DynamoDBClient
 	tableName string
@@ -33,7 +40,7 @@ type ContentItem struct {
 }
 
 // NewContentRepository は新しいContentRepositoryインスタンスを作成します
-func NewContentRepository(dbClient *infrastructure.DynamoDBClient) *contentRepository {
+func NewContentRepository(dbClient *infrastructure.DynamoDBClient) ContentRepository {
 	return &contentRepository{
 		dbClient:  dbClient,
 		tableName: "Contents",
