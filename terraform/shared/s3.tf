@@ -34,7 +34,7 @@ resource "null_resource" "lambda_package" {
 
   provisioner "local-exec" {
     // Build the lambda package and zip it
-    working_dir = "${local.codedir_local_path}/admin_api_server"
+    working_dir = "${local.codedir_local_path}"
     environment = {
       GOOS   = "linux"
       GOARCH = "amd64"

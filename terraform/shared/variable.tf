@@ -68,8 +68,8 @@ variable "aws_endpoint_url_s3" {
 
 locals {
   codedir_local_path              = "${path.module}/../../cms_api/${var.language}"
-  package_local_path              = "${local.codedir_local_path}/admin_api_server/output/main.zip"
-  package_base64sha256_local_path = "${local.codedir_local_path}/admin_api_server/output/main.base64sha256"
+  package_local_path              = "${local.codedir_local_path}/output/main.zip"
+  package_base64sha256_local_path = "${local.codedir_local_path}/output/main.base64sha256"
   package_s3_key                  = "cms/main.zip"
   package_base64sha256_s3_key     = "${local.package_s3_key}.base64sha256.txt"
 }
