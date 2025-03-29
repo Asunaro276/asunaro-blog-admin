@@ -1,8 +1,8 @@
 package repository
 
 import (
+	model "cms_api/internal/domain/entity"
 	"cms_api/internal/infrastructure"
-	"cms_api/internal/domain/entity"
 	"context"
 	"testing"
 	"time"
@@ -63,7 +63,8 @@ func (s *contentRepositoryTestSuite) SetupTest() {
 	// 注: 実際の実装では、テーブルの全アイテムをスキャンして削除するか、
 	// テスト用のテーブルを毎回作り直す方が良いでしょう
 }
-func (s *contentRepositoryTestSuite) createTestContent(id, title, description, body, coverImage, publishedAt, status, categoryID, tagID string) *model.Article {
+
+func (s *contentRepositoryTestSuite) createTestContent(id, title, description, body, coverImage, publishedAt, status, categoryID string, tags []string) *model.Article {
 	content := &model.Article{
 		ID:          id,
 		Title:       title,
@@ -73,7 +74,7 @@ func (s *contentRepositoryTestSuite) createTestContent(id, title, description, b
 		PublishedAt: publishedAt,
 		Status:      status,
 		CategoryID:  categoryID,
-		TagID:       tagID,
+		Tags:        tags,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -82,14 +83,11 @@ func (s *contentRepositoryTestSuite) createTestContent(id, title, description, b
 	return content
 }
 
-// テストデータを作成するヘルパー関数
 func (s *contentRepositoryTestSuite) TestGetArticles() {
 	s.Run("Contentsテーブルにデータが存在しない場合、GetContentsが空の配列を返す", func() {
-		// テスト実行前にテーブルが空であることを確認
-		contents, err := s.repo.GetArticles()
+		contents, err := s.repo.GetArticles(s.ctx)
 		s.Require().NoError(err)
 		s.Require().Empty(contents, "テスト前にテーブルは空であるべき")
-
 	})
 
 	s.Run("ContentsテーブルにPK=ARTICLE,SK=ARTICLE#1のデータが存在する場合、GetArticlesが記事のデータを返す", func() {
@@ -103,17 +101,19 @@ func (s *contentRepositoryTestSuite) TestGetArticles() {
 			"",
 			"",
 			"",
-			"",
+			[]string{"tag1", "tag2"},
 		)
 
-		// データを取得して検証
-		contents, err := s.repo.GetArticles()
+		contents, err := s.repo.GetArticles(s.ctx)
 		s.Require().NoError(err)
 		s.Require().NotEmpty(contents, "テーブルにデータが存在する場合は結果が返るべき")
 
-		// 少なくとも1つのデータが取得できているか確認
 		var found bool
 		for _, c := range contents {
+			println("--------------------------------")
+			println(c.ID)
+			println(testContent.ID)
+			println("--------------------------------")
 			if c.ID == testContent.ID {
 				found = true
 				s.Equal(testContent.Title, c.Title)
@@ -122,17 +122,9 @@ func (s *contentRepositoryTestSuite) TestGetArticles() {
 			}
 		}
 		s.True(found, "作成したテストデータが取得できるべき")
-
-		// テスト後のクリーンアップ
-		err = s.repo.DeleteContent(testContent.ID)
-		s.Require().NoError(err, "テストデータの削除に失敗しました")
 	})
 
-	// 注: 実際の環境ではエラーケースのテストも必要ですが、
-	// DynamoDB Localに対してエラーを発生させるのは難しいため、
-	// モックを使用するか別の方法でテストする必要があります
 	s.Run("その他のエラーが出た場合にはエラーを返す", func() {
-		// このテストはスキップします
 		s.T().Skip("DynamoDB Localに対してエラーを発生させるのは難しいため、スキップします")
 	})
 }
@@ -149,7 +141,7 @@ func (s *contentRepositoryTestSuite) TestUpdateContent() {
 			"",
 			"",
 			"",
-			"",
+			[]string{"tag1", "tag2"},
 		)
 
 		// データを更新
@@ -159,7 +151,7 @@ func (s *contentRepositoryTestSuite) TestUpdateContent() {
 		s.Require().NoError(err, "コンテンツの更新に失敗しました")
 
 		// 更新されたデータを取得して検証
-		contents, err := s.repo.GetArticles()
+		contents, err := s.repo.GetArticles(s.ctx)
 		s.Require().NoError(err)
 
 		var updatedContent *model.Article
@@ -198,11 +190,11 @@ func (s *contentRepositoryTestSuite) TestDeleteContent() {
 			"",
 			"",
 			"",
-			"",
+			[]string{"tag1", "tag2"},
 		)
 
 		// データが存在することを確認
-		contents, err := s.repo.GetArticles()
+		contents, err := s.repo.GetArticles(s.ctx)
 		s.Require().NoError(err)
 
 		var exists bool
@@ -219,7 +211,7 @@ func (s *contentRepositoryTestSuite) TestDeleteContent() {
 		s.Require().NoError(err, "コンテンツの削除に失敗しました")
 
 		// データが削除されたことを確認
-		contents, err = s.repo.GetArticles()
+		contents, err = s.repo.GetArticles(s.ctx)
 		s.Require().NoError(err)
 
 		for _, c := range contents {

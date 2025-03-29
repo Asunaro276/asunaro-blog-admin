@@ -2,7 +2,6 @@ package model
 
 import "time"
 
-// Content はコンテンツのドメインモデルです
 type Article struct {
 	ID          string    `json:"id"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -14,5 +13,5 @@ type Article struct {
 	PublishedAt string    `json:"published_at"`
 	Status      string    `json:"status"`
 	CategoryID  string    `json:"category_id"`
-	TagID       string    `json:"tag_id"`
+	Tags        []string  `json:"tags"`
 }
