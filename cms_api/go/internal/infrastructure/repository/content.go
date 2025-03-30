@@ -82,7 +82,7 @@ func (cr *contentRepository) GetArticles(ctx context.Context) ([]model.Article, 
 }
 
 // CreateContent は新しいコンテンツを作成します
-func (cr *contentRepository) CreateContent(content *model.Article) error {
+func (cr *contentRepository) CreateArticle(content *model.Article) error {
 	ctx := context.Background()
 
 	item := ArticleItem{

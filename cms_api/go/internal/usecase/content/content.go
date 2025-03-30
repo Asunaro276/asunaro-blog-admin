@@ -1,11 +1,12 @@
 package usecase
 
 import (
-	"cms_api/internal/domain/entity"
+	model "cms_api/internal/domain/entity"
+	"context"
 )
 
 type getContents interface {
-	GetArticles() ([]model.Article, error)
+	GetArticles(ctx context.Context) ([]model.Article, error)
 }
 
 type contentUsecase struct {
