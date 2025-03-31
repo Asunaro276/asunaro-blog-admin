@@ -78,7 +78,7 @@ func (s *contentRepositoryTestSuite) createTestContent(id, title, description, b
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	err := s.repo.CreateContent(content)
+	err := s.repo.CreateArticle(content)
 	s.Require().NoError(err, "テストデータの作成に失敗しました")
 	return content
 }
@@ -147,7 +147,7 @@ func (s *contentRepositoryTestSuite) TestUpdateContent() {
 		// データを更新
 		testContent.Title = "更新後のタイトル"
 		testContent.Body = "更新後の本文"
-		err := s.repo.UpdateContent(testContent)
+		err := s.repo.UpdateArticle(testContent)
 		s.Require().NoError(err, "コンテンツの更新に失敗しました")
 
 		// 更新されたデータを取得して検証
@@ -168,7 +168,7 @@ func (s *contentRepositoryTestSuite) TestUpdateContent() {
 		s.Equal("更新後の本文", updatedContent.Body)
 
 		// テスト後のクリーンアップ
-		err = s.repo.DeleteContent(testContent.ID)
+		err = s.repo.DeleteArticle(testContent.ID)
 		s.Require().NoError(err, "テストデータの削除に失敗しました")
 	})
 
@@ -207,7 +207,7 @@ func (s *contentRepositoryTestSuite) TestDeleteContent() {
 		s.True(exists, "削除前にデータが存在するべき")
 
 		// データを削除
-		err = s.repo.DeleteContent(testContent.ID)
+		err = s.repo.DeleteArticle(testContent.ID)
 		s.Require().NoError(err, "コンテンツの削除に失敗しました")
 
 		// データが削除されたことを確認

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"testing"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -20,6 +22,40 @@ type DynamoDBContainer struct {
 	Container testcontainers.Container
 	Client    *dynamodb.Client
 	Endpoint  string
+}
+
+var dynamoDBContainer *DynamoDBContainer
+
+func TestMain(m *testing.M) {
+	// テスト開始前にコンテナを起動
+	ctx := context.Background()
+	var err error
+	dynamoDBContainer, err = SetupDynamoDBContainer(ctx)
+	if err != nil {
+		log.Fatalf("テストコンテナの起動に失敗しました: %v", err)
+	}
+
+	// 必要なテストテーブルを作成
+	err = dynamoDBContainer.CreateTable(ctx, "TestTable")
+	if err != nil {
+		log.Fatalf("テストテーブルの作成に失敗しました: %v", err)
+	}
+
+	// すべてのテストを実行
+	code := m.Run()
+
+	// テスト終了後にコンテナを破棄
+	if err := dynamoDBContainer.Teardown(ctx); err != nil {
+		log.Printf("コンテナの破棄中にエラーが発生しました: %v", err)
+	}
+
+	// テスト結果のステータスコードで終了
+	os.Exit(code)
+}
+
+// GetTestDynamoDBClient はテスト用のDynamoDBクライアントを返します
+func GetTestDynamoDBClient() *DynamoDBClient {
+	return NewDynamoDBClientFromContainer(dynamoDBContainer)
 }
 
 // SetupDynamoDBContainer はDynamoDB Localコンテナをセットアップします

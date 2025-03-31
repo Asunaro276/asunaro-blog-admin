@@ -15,9 +15,9 @@ import (
 // contentRepository はContentRepositoryの実装です
 type ContentRepository interface {
 	GetArticles(ctx context.Context) ([]model.Article, error)
-	CreateContent(content *model.Article) error
-	UpdateContent(content *model.Article) error
-	DeleteContent(id string) error
+	CreateArticle(content *model.Article) error
+	UpdateArticle(content *model.Article) error
+	DeleteArticle(id string) error
 }
 
 type contentRepository struct {
@@ -122,11 +122,11 @@ func (cr *contentRepository) CreateArticle(content *model.Article) error {
 }
 
 // UpdateContent はコンテンツを更新します
-func (cr *contentRepository) UpdateContent(content *model.Article) error {
+func (cr *contentRepository) UpdateArticle(content *model.Article) error {
 	panic("not implemented")
 }
 
-// DeleteContent はコンテンツを削除します
-func (cr *contentRepository) DeleteContent(id string) error {
+// DeleteArticle はコンテンツを削除します
+func (cr *contentRepository) DeleteArticle(id string) error {
 	panic("not implemented")
 }
