@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"cms_api/internal/domain/entity"
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	model "cms_api/internal/domain/entity"
 	"cms_api/internal/usecase/content/mocks"
 
 	"github.com/labstack/echo/v4"
@@ -76,19 +77,19 @@ func (s *contentsControllerTestSuite) TestGetContents() {
 						UpdatedAt: time.Now(),
 					},
 				}
-				s.mockUsecase.EXPECT().GetArticles().Return(contents, nil)
+				s.mockUsecase.EXPECT().GetArticles(context.Background()).Return(contents, nil)
 			},
 			expectedStatus: http.StatusOK,
 			expectedBody: []model.Article{
 				{
-					ID:     "1",
-					Title:  "テストタイトル1",
-					Body:   "テスト本文1",
+					ID:    "1",
+					Title: "テストタイトル1",
+					Body:  "テスト本文1",
 				},
 				{
-					ID:     "2",
-					Title:  "テストタイトル2",
-					Body:   "テスト本文2",
+					ID:    "2",
+					Title: "テストタイトル2",
+					Body:  "テスト本文2",
 				},
 			},
 			expectError: false,
@@ -96,7 +97,7 @@ func (s *contentsControllerTestSuite) TestGetContents() {
 		{
 			name: "異常系：コンテンツ取得でエラーが発生する場合",
 			setup: func(s *contentsControllerTestSuite) {
-				s.mockUsecase.EXPECT().GetArticles().Return(nil, errors.New("取得エラー"))
+				s.mockUsecase.EXPECT().GetArticles(context.Background()).Return(nil, errors.New("取得エラー"))
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody:   nil,

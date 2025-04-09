@@ -1,14 +1,15 @@
 package controller
 
 import (
-	"cms_api/internal/domain/entity"
+	model "cms_api/internal/domain/entity"
+	"context"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 type getContents interface {
-	GetArticles() ([]model.Article, error)
+	GetArticles(ctx context.Context) ([]model.Article, error)
 }
 
 type ContentController struct {
@@ -31,7 +32,7 @@ func NewContentController(cu getContents) *ContentController {
 // @Failure 500 {object} map[string]string
 // @Router / [get]
 func (cc *ContentController) GetContent(c echo.Context) error {
-	contents, err := cc.contentUsecase.GetArticles()
+	contents, err := cc.contentUsecase.GetArticles(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"error": err.Error(),

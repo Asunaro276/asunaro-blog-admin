@@ -29,7 +29,6 @@ type contentRepository struct {
 type ArticleItem struct {
 	PK           string    `dynamodbav:"PK"`
 	SK           string    `dynamodbav:"SK"`
-	Type         string    `dynamodbav:"type"`
 	Title        string    `dynamodbav:"title"`
 	Description  string    `dynamodbav:"description"`
 	Body         string    `dynamodbav:"body"`
@@ -55,26 +54,41 @@ func NewContentRepository(dbClient *infrastructure.DynamoDBClient) ContentReposi
 
 // GetArticles はコンテンツのリストを取得します
 func (cr *contentRepository) GetArticles(ctx context.Context) ([]model.Article, error) {
-	input := &dynamodb.ScanInput{
-		TableName:        aws.String(cr.tableName),
-		FilterExpression: aws.String("PK = :articleType"),
+	input := &dynamodb.QueryInput{
+		TableName:              aws.String(cr.tableName),
+		IndexName:              aws.String("GSI1"),
+		KeyConditionExpression: aws.String("GSI1PK = :articleType"),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":articleType": &types.AttributeValueMemberS{Value: "ARTICLE"},
 		},
 	}
 
-	result, err := cr.dbClient.Client.Scan(ctx, input)
+	result, err := cr.dbClient.Client.Query(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
 	articles := []model.Article{}
 	for _, item := range result.Items {
-		article := model.Article{}
-		err = attributevalue.UnmarshalMap(item, &article)
+		var articleItem ArticleItem
+		err = attributevalue.UnmarshalMap(item, &articleItem)
 		if err != nil {
 			return nil, err
 		}
+
+		article := model.Article{
+			ID:          articleItem.PK,
+			Title:       articleItem.Title,
+			Description: articleItem.Description,
+			Body:        articleItem.Body,
+			CoverImage:  articleItem.CoverImage,
+			PublishedAt: articleItem.PublishedAt,
+			UpdatedAt:   articleItem.UpdatedAt,
+			Status:      articleItem.Status,
+			CategoryID:  articleItem.CategoryID,
+			// Tagsフィールドは現在のArticleItemには含まれていないため設定しない
+		}
+
 		articles = append(articles, article)
 	}
 
@@ -87,8 +101,7 @@ func (cr *contentRepository) CreateArticle(content *model.Article) error {
 
 	item := ArticleItem{
 		PK:          content.ID,
-		SK:          "ARTICLE#" + content.ID,
-		Type:        "ARTICLE",
+		SK:          "a#" + content.ID,
 		Title:       content.Title,
 		Description: content.Description,
 		Body:        content.Body,
@@ -98,13 +111,6 @@ func (cr *contentRepository) CreateArticle(content *model.Article) error {
 		UpdatedAt:   time.Now(),
 		GSI1PK:      "ARTICLE",
 		GSI1SK:      time.Now().Format(time.RFC3339),
-	}
-
-	if content.PublishedAt != "" {
-		publishedTime, err := time.Parse(time.RFC3339, content.PublishedAt)
-		if err == nil {
-			item.PublishedAt = publishedTime
-		}
 	}
 
 	av, err := attributevalue.MarshalMap(item)

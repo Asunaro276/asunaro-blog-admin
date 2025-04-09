@@ -21,8 +21,8 @@ func NewContentUsecase(getContents getContents) *contentUsecase {
 }
 
 // GetContent はコンテンツを取得します
-func (u *contentUsecase) GetArticles() ([]model.Article, error) {
-	contents, err := u.contentRepository.GetArticles()
+func (u *contentUsecase) GetArticles(ctx context.Context) ([]model.Article, error) {
+	contents, err := u.contentRepository.GetArticles(ctx)
 	if err != nil {
 		return nil, err
 	}

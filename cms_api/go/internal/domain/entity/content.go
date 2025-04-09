@@ -10,7 +10,7 @@ type Article struct {
 	Description string    `json:"description"`
 	Body        string    `json:"body"`
 	CoverImage  string    `json:"cover_image"`
-	PublishedAt string    `json:"published_at"`
+	PublishedAt time.Time `json:"published_at"`
 	Status      string    `json:"status"`
 	CategoryID  string    `json:"category_id"`
 	Tags        []string  `json:"tags"`

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"cms_api/internal/domain/entity"
+	"context"
 	"errors"
 	"fmt"
 	"math/rand/v2"
@@ -57,7 +58,7 @@ func (s *contentsUsecaseTestSuite) TestGetContents() {
 			name: "正常系：コンテンツが正常に取得できる場合",
 			setup: func() {
 				contents := []model.Article{*content1, *content2}
-				s.mockRepository.EXPECT().GetArticles().Return(contents, nil)
+				s.mockRepository.EXPECT().GetArticles(context.Background()).Return(contents, nil)
 			},
 			expectedData: []model.Article{
 				*content1,
@@ -68,7 +69,7 @@ func (s *contentsUsecaseTestSuite) TestGetContents() {
 		{
 			name: "異常系：コンテンツ取得でエラーが発生する場合",
 			setup: func() {
-				s.mockRepository.EXPECT().GetArticles().Return(nil, errors.New("取得エラー"))
+				s.mockRepository.EXPECT().GetArticles(context.Background()).Return(nil, errors.New("取得エラー"))
 			},
 			expectedData:  nil,
 			expectedError: errors.New("取得エラー"),
@@ -81,7 +82,7 @@ func (s *contentsUsecaseTestSuite) TestGetContents() {
 			tc.setup()
 
 			// テスト対象のメソッドを実行
-			contents, err := s.usecase.GetArticles()
+			contents, err := s.usecase.GetArticles(context.Background())
 
 			// エラーのアサーション
 			assert.Equal(s.T(), tc.expectedError, err)

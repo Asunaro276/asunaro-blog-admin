@@ -4,6 +4,7 @@ package mocks
 
 import (
 	model "cms_api/internal/domain/entity"
+	context "context"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -21,12 +22,12 @@ func (_m *ContentRepository) EXPECT() *ContentRepository_Expecter {
 	return &ContentRepository_Expecter{mock: &_m.Mock}
 }
 
-// CreateContent provides a mock function with given fields: content
-func (_m *ContentRepository) CreateContent(content *model.Article) error {
+// CreateArticle provides a mock function with given fields: content
+func (_m *ContentRepository) CreateArticle(content *model.Article) error {
 	ret := _m.Called(content)
 
 	if len(ret) == 0 {
-		panic("no return value specified for CreateContent")
+		panic("no return value specified for CreateArticle")
 	}
 
 	var r0 error
@@ -39,40 +40,40 @@ func (_m *ContentRepository) CreateContent(content *model.Article) error {
 	return r0
 }
 
-// ContentRepository_CreateContent_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateContent'
-type ContentRepository_CreateContent_Call struct {
+// ContentRepository_CreateArticle_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateArticle'
+type ContentRepository_CreateArticle_Call struct {
 	*mock.Call
 }
 
-// CreateContent is a helper method to define mock.On call
+// CreateArticle is a helper method to define mock.On call
 //   - content *model.Article
-func (_e *ContentRepository_Expecter) CreateContent(content interface{}) *ContentRepository_CreateContent_Call {
-	return &ContentRepository_CreateContent_Call{Call: _e.mock.On("CreateContent", content)}
+func (_e *ContentRepository_Expecter) CreateArticle(content interface{}) *ContentRepository_CreateArticle_Call {
+	return &ContentRepository_CreateArticle_Call{Call: _e.mock.On("CreateArticle", content)}
 }
 
-func (_c *ContentRepository_CreateContent_Call) Run(run func(content *model.Article)) *ContentRepository_CreateContent_Call {
+func (_c *ContentRepository_CreateArticle_Call) Run(run func(content *model.Article)) *ContentRepository_CreateArticle_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(*model.Article))
 	})
 	return _c
 }
 
-func (_c *ContentRepository_CreateContent_Call) Return(_a0 error) *ContentRepository_CreateContent_Call {
+func (_c *ContentRepository_CreateArticle_Call) Return(_a0 error) *ContentRepository_CreateArticle_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *ContentRepository_CreateContent_Call) RunAndReturn(run func(*model.Article) error) *ContentRepository_CreateContent_Call {
+func (_c *ContentRepository_CreateArticle_Call) RunAndReturn(run func(*model.Article) error) *ContentRepository_CreateArticle_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// DeleteContent provides a mock function with given fields: id
-func (_m *ContentRepository) DeleteContent(id string) error {
+// DeleteArticle provides a mock function with given fields: id
+func (_m *ContentRepository) DeleteArticle(id string) error {
 	ret := _m.Called(id)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteContent")
+		panic("no return value specified for DeleteArticle")
 	}
 
 	var r0 error
@@ -85,37 +86,37 @@ func (_m *ContentRepository) DeleteContent(id string) error {
 	return r0
 }
 
-// ContentRepository_DeleteContent_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteContent'
-type ContentRepository_DeleteContent_Call struct {
+// ContentRepository_DeleteArticle_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteArticle'
+type ContentRepository_DeleteArticle_Call struct {
 	*mock.Call
 }
 
-// DeleteContent is a helper method to define mock.On call
+// DeleteArticle is a helper method to define mock.On call
 //   - id string
-func (_e *ContentRepository_Expecter) DeleteContent(id interface{}) *ContentRepository_DeleteContent_Call {
-	return &ContentRepository_DeleteContent_Call{Call: _e.mock.On("DeleteContent", id)}
+func (_e *ContentRepository_Expecter) DeleteArticle(id interface{}) *ContentRepository_DeleteArticle_Call {
+	return &ContentRepository_DeleteArticle_Call{Call: _e.mock.On("DeleteArticle", id)}
 }
 
-func (_c *ContentRepository_DeleteContent_Call) Run(run func(id string)) *ContentRepository_DeleteContent_Call {
+func (_c *ContentRepository_DeleteArticle_Call) Run(run func(id string)) *ContentRepository_DeleteArticle_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(string))
 	})
 	return _c
 }
 
-func (_c *ContentRepository_DeleteContent_Call) Return(_a0 error) *ContentRepository_DeleteContent_Call {
+func (_c *ContentRepository_DeleteArticle_Call) Return(_a0 error) *ContentRepository_DeleteArticle_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *ContentRepository_DeleteContent_Call) RunAndReturn(run func(string) error) *ContentRepository_DeleteContent_Call {
+func (_c *ContentRepository_DeleteArticle_Call) RunAndReturn(run func(string) error) *ContentRepository_DeleteArticle_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetArticles provides a mock function with no fields
-func (_m *ContentRepository) GetArticles() ([]model.Article, error) {
-	ret := _m.Called()
+// GetArticles provides a mock function with given fields: ctx
+func (_m *ContentRepository) GetArticles(ctx context.Context) ([]model.Article, error) {
+	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetArticles")
@@ -123,19 +124,19 @@ func (_m *ContentRepository) GetArticles() ([]model.Article, error) {
 
 	var r0 []model.Article
 	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]model.Article, error)); ok {
-		return rf()
+	if rf, ok := ret.Get(0).(func(context.Context) ([]model.Article, error)); ok {
+		return rf(ctx)
 	}
-	if rf, ok := ret.Get(0).(func() []model.Article); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(context.Context) []model.Article); ok {
+		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Article)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -149,13 +150,14 @@ type ContentRepository_GetArticles_Call struct {
 }
 
 // GetArticles is a helper method to define mock.On call
-func (_e *ContentRepository_Expecter) GetArticles() *ContentRepository_GetArticles_Call {
-	return &ContentRepository_GetArticles_Call{Call: _e.mock.On("GetArticles")}
+//   - ctx context.Context
+func (_e *ContentRepository_Expecter) GetArticles(ctx interface{}) *ContentRepository_GetArticles_Call {
+	return &ContentRepository_GetArticles_Call{Call: _e.mock.On("GetArticles", ctx)}
 }
 
-func (_c *ContentRepository_GetArticles_Call) Run(run func()) *ContentRepository_GetArticles_Call {
+func (_c *ContentRepository_GetArticles_Call) Run(run func(ctx context.Context)) *ContentRepository_GetArticles_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		run(args[0].(context.Context))
 	})
 	return _c
 }
@@ -165,17 +167,17 @@ func (_c *ContentRepository_GetArticles_Call) Return(_a0 []model.Article, _a1 er
 	return _c
 }
 
-func (_c *ContentRepository_GetArticles_Call) RunAndReturn(run func() ([]model.Article, error)) *ContentRepository_GetArticles_Call {
+func (_c *ContentRepository_GetArticles_Call) RunAndReturn(run func(context.Context) ([]model.Article, error)) *ContentRepository_GetArticles_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// UpdateContent provides a mock function with given fields: content
-func (_m *ContentRepository) UpdateContent(content *model.Article) error {
+// UpdateArticle provides a mock function with given fields: content
+func (_m *ContentRepository) UpdateArticle(content *model.Article) error {
 	ret := _m.Called(content)
 
 	if len(ret) == 0 {
-		panic("no return value specified for UpdateContent")
+		panic("no return value specified for UpdateArticle")
 	}
 
 	var r0 error
@@ -188,30 +190,30 @@ func (_m *ContentRepository) UpdateContent(content *model.Article) error {
 	return r0
 }
 
-// ContentRepository_UpdateContent_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateContent'
-type ContentRepository_UpdateContent_Call struct {
+// ContentRepository_UpdateArticle_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateArticle'
+type ContentRepository_UpdateArticle_Call struct {
 	*mock.Call
 }
 
-// UpdateContent is a helper method to define mock.On call
+// UpdateArticle is a helper method to define mock.On call
 //   - content *model.Article
-func (_e *ContentRepository_Expecter) UpdateContent(content interface{}) *ContentRepository_UpdateContent_Call {
-	return &ContentRepository_UpdateContent_Call{Call: _e.mock.On("UpdateContent", content)}
+func (_e *ContentRepository_Expecter) UpdateArticle(content interface{}) *ContentRepository_UpdateArticle_Call {
+	return &ContentRepository_UpdateArticle_Call{Call: _e.mock.On("UpdateArticle", content)}
 }
 
-func (_c *ContentRepository_UpdateContent_Call) Run(run func(content *model.Article)) *ContentRepository_UpdateContent_Call {
+func (_c *ContentRepository_UpdateArticle_Call) Run(run func(content *model.Article)) *ContentRepository_UpdateArticle_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(*model.Article))
 	})
 	return _c
 }
 
-func (_c *ContentRepository_UpdateContent_Call) Return(_a0 error) *ContentRepository_UpdateContent_Call {
+func (_c *ContentRepository_UpdateArticle_Call) Return(_a0 error) *ContentRepository_UpdateArticle_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *ContentRepository_UpdateContent_Call) RunAndReturn(run func(*model.Article) error) *ContentRepository_UpdateContent_Call {
+func (_c *ContentRepository_UpdateArticle_Call) RunAndReturn(run func(*model.Article) error) *ContentRepository_UpdateArticle_Call {
 	_c.Call.Return(run)
 	return _c
 }
