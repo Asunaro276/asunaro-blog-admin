@@ -4,8 +4,8 @@ on:
   push:
     branches-ignore:
       - main
-    paths:
-      - 'cms_api/go/**'
+    # paths:
+    #   - 'cms_api/go/**'
 jobs:
   test:
     name: Test
