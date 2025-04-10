@@ -2,12 +2,10 @@ name: Go Test & Lint CI
 
 on:
   push:
+    branches-ignore:
+      - main
     paths:
       - 'cms_api/go/**'
-  pull_request:
-    paths:
-      - 'cms_api/go/**'
-
 jobs:
   test:
     name: Test
@@ -30,7 +28,7 @@ jobs:
         run: go mod download
 
       - name: Run tests
-        run: go test ./... -v
+        run: make test
 
   lint:
     name: Lint
