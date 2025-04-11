@@ -39,4 +39,5 @@ jobs:
         with:
           version: v1.54
           working-directory: cms_api/go
-          args: --timeout=5m 
+          args: --timeout=5m
+          skip-cache: true
