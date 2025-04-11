@@ -25,7 +25,11 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: go mod download
+        run: |
+          go mod download
+
+      - name: Generate mocks
+        run: make mock
 
       - name: Run tests
         run: make test
