@@ -6,13 +6,17 @@ on:
       - main
     # paths:
     #   - 'cms_api/go/**'
+
+env:
+  WORKING_DIRECTORY: cms_api/go
+
 jobs:
   lint_and_test:
     name: Lint and Test
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: cms_api/go
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,9 +24,12 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version-file: go.mod
+          go-version-file: ${{ env.WORKING_DIRECTORY }}/go.mod
           check-latest: true
           cache: true
+          cache-dependency-path: |
+            **/go.mod
+            **/go.sum
 
       - name: Install dependencies
         run: |
@@ -35,4 +42,4 @@ jobs:
         uses: golangci/golangci-lint-action@v7
         with:
           version: v2.0
-          working-directory: cms_api/go
+          working-directory: ${{ env.WORKING_DIRECTORY }}
