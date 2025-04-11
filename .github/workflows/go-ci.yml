@@ -27,6 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           go mod download
+          go get github.com/vektra/mockery/v2@latest
 
       - name: Generate mocks
         run: make mock
