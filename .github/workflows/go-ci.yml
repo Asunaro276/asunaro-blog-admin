@@ -2,19 +2,21 @@ name: Go Test & Lint CI
 
 on:
   push:
-    paths:
-      - 'cms_api/go/**'
-  pull_request:
-    paths:
-      - 'cms_api/go/**'
+    branches-ignore:
+      - main
+    # paths:
+    #   - 'cms_api/go/**'
+
+env:
+  WORKING_DIRECTORY: cms_api/go
 
 jobs:
-  test:
-    name: Test
+  lint_and_test:
+    name: Lint and Test
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: cms_api/go
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,36 +24,22 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21'
+          go-version-file: ${{ env.WORKING_DIRECTORY }}/go.mod
           check-latest: true
           cache: true
+          cache-dependency-path: |
+            **/go.mod
+            **/go.sum
 
       - name: Install dependencies
-        run: go mod download
+        run: |
+          go mod download
 
       - name: Run tests
-        run: go test ./... -v
+        run: make test
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: cms_api/go
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Go
-        uses: actions/setup-go@v4
+      - name: Run lint
+        uses: golangci/golangci-lint-action@v7
         with:
-          go-version: '1.21'
-          check-latest: true
-          cache: true
-
-      - name: Install golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.54
-          working-directory: cms_api/go
-          args: --timeout=5m 
+          version: v2.0
+          working-directory: ${{ env.WORKING_DIRECTORY }}

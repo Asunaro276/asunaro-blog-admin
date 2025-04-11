@@ -1,9 +1,9 @@
 package main
 
 import (
+	"cms_api/internal/controller"
 	"cms_api/internal/infrastructure"
 	"cms_api/internal/infrastructure/repository"
-	"cms_api/internal/controller"
 	usecase "cms_api/internal/usecase/content"
 	"cms_api/internal/usecase/healthcheck"
 	"context"

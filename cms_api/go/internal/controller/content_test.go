@@ -13,6 +13,7 @@ import (
 	"cms_api/internal/usecase/content/mocks"
 
 	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -124,23 +125,23 @@ func (s *contentsControllerTestSuite) TestGetContents() {
 			// アサーション
 			if tc.expectError {
 				// エラーケースのレスポンスを検証
-				s.Equal(tc.expectedStatus, rec.Code)
+				assert.Equal(s.T(), tc.expectedStatus, rec.Code)
 
 				// JSONレスポンスがエラーを含むか検証
 				var responseBody map[string]interface{}
 				err := json.Unmarshal(rec.Body.Bytes(), &responseBody)
-				s.NoError(err)
-				s.Contains(responseBody, "error")
+				assert.NoError(s.T(), err)
+				assert.Contains(s.T(), responseBody, "error")
 			} else {
 				// 正常系のレスポンスを検証
-				s.NoError(err)
-				s.Equal(tc.expectedStatus, rec.Code)
+				assert.NoError(s.T(), err)
+				assert.Equal(s.T(), tc.expectedStatus, rec.Code)
 
 				// レスポンスボディを検証
 				if tc.expectedBody != nil {
 					var responseContents []model.Article
 					err := json.Unmarshal(rec.Body.Bytes(), &responseContents)
-					s.NoError(err)
+					assert.NoError(s.T(), err)
 
 					// 時間フィールドは動的に生成されるため、比較から除外する
 					for i := range responseContents {
@@ -152,7 +153,7 @@ func (s *contentsControllerTestSuite) TestGetContents() {
 						tc.expectedBody[i].UpdatedAt = time.Time{}
 					}
 
-					s.Equal(tc.expectedBody, responseContents)
+					assert.Equal(s.T(), tc.expectedBody, responseContents)
 				}
 			}
 
