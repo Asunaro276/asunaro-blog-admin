@@ -20,7 +20,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21'
+          go-version-file: go.mod
           check-latest: true
           cache: true
 
@@ -28,16 +28,11 @@ jobs:
         run: |
           go mod download
 
-      - name: Generate mocks
-        run: go tool mockery
-
       - name: Run tests
         run: make test
 
       - name: Run lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v7
         with:
-          version: v1.54
+          version: v2.0
           working-directory: cms_api/go
-          args: --timeout=5m
-          skip-cache: true
