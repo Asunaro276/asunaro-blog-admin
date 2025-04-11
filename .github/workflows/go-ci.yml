@@ -7,8 +7,8 @@ on:
     # paths:
     #   - 'cms_api/go/**'
 jobs:
-  test:
-    name: Test
+  lint_and_test:
+    name: Lint and Test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,24 +30,7 @@ jobs:
       - name: Run tests
         run: make test
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: cms_api/go
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.21'
-          check-latest: true
-          cache: true
-
-      - name: Install golangci-lint
+      - name: Run lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.54
