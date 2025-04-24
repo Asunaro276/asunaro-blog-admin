@@ -1,4 +1,4 @@
-package infrastructure
+package repository
 
 import (
 	"context"
@@ -10,12 +10,12 @@ import (
 )
 
 // DynamoDBClient はDynamoDBとの接続を管理する構造体です
-type DynamoDBClient struct {
-	Client *dynamodb.Client
+type dynamoDBClient struct {
+	client *dynamodb.Client
 }
 
 // NewDynamoDBClient は新しいDynamoDBクライアントを作成します
-func NewDynamoDBClient() (*DynamoDBClient, error) {
+func NewDynamoDBClient() (*dynamoDBClient, error) {
 	// AWS SDK設定を読み込み
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
@@ -26,14 +26,14 @@ func NewDynamoDBClient() (*DynamoDBClient, error) {
 	// DynamoDBクライアントを作成
 	client := dynamodb.NewFromConfig(cfg)
 
-	return &DynamoDBClient{
-		Client: client,
+	return &dynamoDBClient{
+		client: client,
 	}, nil
 }
 
 // NewDynamoDBClientWithEndpoint はカスタムエンドポイントを使用した新しいDynamoDBクライアントを作成します
 // ローカル開発やテスト環境で使用します
-func NewDynamoDBClientWithEndpoint(region, endpoint string) (*DynamoDBClient, error) {
+func NewDynamoDBClientWithEndpoint(region, endpoint string) (*dynamoDBClient, error) {
 	// AWS SDK設定を読み込み
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion(region),
@@ -48,12 +48,12 @@ func NewDynamoDBClientWithEndpoint(region, endpoint string) (*DynamoDBClient, er
 		o.BaseEndpoint = aws.String(endpoint)
 	})
 
-	return &DynamoDBClient{
-		Client: client,
+	return &dynamoDBClient{
+		client: client,
 	}, nil
 }
 
 // GetClient はDynamoDBクライアントを返します
-func (d *DynamoDBClient) GetClient() *dynamodb.Client {
-	return d.Client
+func (d *dynamoDBClient) GetClient() *dynamodb.Client {
+	return d.client
 }

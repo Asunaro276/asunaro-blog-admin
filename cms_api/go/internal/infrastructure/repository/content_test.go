@@ -2,8 +2,6 @@ package repository
 
 import (
 	model "cms_api/internal/domain/entity"
-	"cms_api/internal/infrastructure"
-	"context"
 	"testing"
 	"time"
 
@@ -13,58 +11,15 @@ import (
 
 // MockDynamoDBClient はDynamoDBClientのモック
 type MockDynamoDBClient struct {
-	*infrastructure.DynamoDBClient
+	*dynamoDBClient
 	mock.Mock
 }
 
-// モックメソッドを定義
-
-type contentRepositoryTestSuite struct {
-	suite.Suite
-	repo            ContentRepository
-	dynamoContainer *infrastructure.DynamoDBContainer
-	ctx             context.Context
-}
-
 func TestContentRepository(t *testing.T) {
-	suite.Run(t, new(contentRepositoryTestSuite))
+	suite.Run(t, new(dynamodbTestcontainersTestSuite))
 }
 
-func (s *contentRepositoryTestSuite) SetupSuite() {
-	// コンテキストを初期化
-	s.ctx = context.Background()
-
-	// DynamoDB Localコンテナを起動
-	container, err := infrastructure.SetupDynamoDBContainer(s.ctx)
-	s.Require().NoError(err, "DynamoDB Localコンテナのセットアップに失敗しました")
-	s.dynamoContainer = container
-
-	// テーブルを作成
-	err = container.CreateTable(s.ctx, "Contents")
-	s.Require().NoError(err, "テーブルの作成に失敗しました")
-
-	// DynamoDBクライアントを取得
-	dbClient := infrastructure.NewDynamoDBClientFromContainer(container)
-
-	// リポジトリを初期化
-	s.repo = NewContentRepository(dbClient)
-}
-
-func (s *contentRepositoryTestSuite) TearDownSuite() {
-	if s.dynamoContainer != nil {
-		// コンテナを停止
-		err := s.dynamoContainer.Teardown(s.ctx)
-		s.Require().NoError(err, "DynamoDB Localコンテナの終了に失敗しました")
-	}
-}
-
-func (s *contentRepositoryTestSuite) SetupTest() {
-	// 各テスト前にテーブルをクリアする
-	// 注: 実際の実装では、テーブルの全アイテムをスキャンして削除するか、
-	// テスト用のテーブルを毎回作り直す方が良いでしょう
-}
-
-func (s *contentRepositoryTestSuite) createTestContent(id, title, description, body, coverImage string, publishedAt time.Time, status string, categoryID string, tags []string) *model.Article {
+func (s *dynamodbTestcontainersTestSuite) createTestContent(id, title, description, body, coverImage string, publishedAt time.Time, status string, categoryID string, tags []string) *model.Article {
 	content := &model.Article{
 		ID:          id,
 		Title:       title,
@@ -78,14 +33,14 @@ func (s *contentRepositoryTestSuite) createTestContent(id, title, description, b
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	err := s.repo.CreateArticle(content)
+	err := s.contentRepository.CreateArticle(content)
 	s.Require().NoError(err, "テストデータの作成に失敗しました")
 	return content
 }
 
-func (s *contentRepositoryTestSuite) TestGetArticles() {
+func (s *dynamodbTestcontainersTestSuite) TestGetArticles() {
 	s.Run("Contentsテーブルにデータが存在しない場合、GetContentsが空の配列を返す", func() {
-		contents, err := s.repo.GetArticles(s.ctx)
+		contents, err := s.contentRepository.GetArticles(s.ctx)
 		s.Require().NoError(err)
 		s.Require().Empty(contents, "テスト前にテーブルは空であるべき")
 	})
@@ -104,7 +59,7 @@ func (s *contentRepositoryTestSuite) TestGetArticles() {
 			[]string{"tag1", "tag2"},
 		)
 
-		contents, err := s.repo.GetArticles(s.ctx)
+		contents, err := s.contentRepository.GetArticles(s.ctx)
 		s.Require().NoError(err)
 		s.Require().NotEmpty(contents, "テーブルにデータが存在する場合は結果が返るべき")
 
@@ -125,7 +80,7 @@ func (s *contentRepositoryTestSuite) TestGetArticles() {
 	})
 }
 
-func (s *contentRepositoryTestSuite) TestUpdateContent() {
+func (s *dynamodbTestcontainersTestSuite) TestUpdateContent() {
 	s.T().Skip("UpdateArticleの実装はまだ完了していないためスキップします")
 
 	s.Run("Contentsテーブルに該当のデータが存在する場合、そのデータを更新する", func() {
@@ -145,11 +100,11 @@ func (s *contentRepositoryTestSuite) TestUpdateContent() {
 		// データを更新
 		testContent.Title = "更新後のタイトル"
 		testContent.Body = "更新後の本文"
-		err := s.repo.UpdateArticle(testContent)
+		err := s.contentRepository.UpdateArticle(testContent)
 		s.Require().NoError(err, "コンテンツの更新に失敗しました")
 
 		// 更新されたデータを取得して検証
-		contents, err := s.repo.GetArticles(s.ctx)
+		contents, err := s.contentRepository.GetArticles(s.ctx)
 		s.Require().NoError(err)
 
 		var updatedContent *model.Article
@@ -166,7 +121,7 @@ func (s *contentRepositoryTestSuite) TestUpdateContent() {
 		s.Equal("更新後の本文", updatedContent.Body)
 
 		// テスト後のクリーンアップ
-		err = s.repo.DeleteArticle(testContent.ID)
+		err = s.contentRepository.DeleteArticle(testContent.ID)
 		s.Require().NoError(err, "テストデータの削除に失敗しました")
 	})
 
@@ -176,7 +131,7 @@ func (s *contentRepositoryTestSuite) TestUpdateContent() {
 	})
 }
 
-func (s *contentRepositoryTestSuite) TestDeleteContent() {
+func (s *dynamodbTestcontainersTestSuite) TestDeleteContent() {
 	s.T().Skip("UpdateArticleの実装はまだ完了していないためスキップします")
 
 	s.Run("Contentsテーブルに該当のデータが存在する場合、そのデータを削除する", func() {
@@ -194,7 +149,7 @@ func (s *contentRepositoryTestSuite) TestDeleteContent() {
 		)
 
 		// データが存在することを確認
-		contents, err := s.repo.GetArticles(s.ctx)
+		contents, err := s.contentRepository.GetArticles(s.ctx)
 		s.Require().NoError(err)
 
 		var exists bool
@@ -207,11 +162,11 @@ func (s *contentRepositoryTestSuite) TestDeleteContent() {
 		s.True(exists, "削除前にデータが存在するべき")
 
 		// データを削除
-		err = s.repo.DeleteArticle(testContent.ID)
+		err = s.contentRepository.DeleteArticle(testContent.ID)
 		s.Require().NoError(err, "コンテンツの削除に失敗しました")
 
 		// データが削除されたことを確認
-		contents, err = s.repo.GetArticles(s.ctx)
+		contents, err = s.contentRepository.GetArticles(s.ctx)
 		s.Require().NoError(err)
 
 		for _, c := range contents {

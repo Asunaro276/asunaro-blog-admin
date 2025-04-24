@@ -2,7 +2,6 @@ package repository
 
 import (
 	model "cms_api/internal/domain/entity"
-	"cms_api/internal/infrastructure"
 	"context"
 	"time"
 
@@ -12,16 +11,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-// contentRepository はContentRepositoryの実装です
-type ContentRepository interface {
-	GetArticles(ctx context.Context) ([]model.Article, error)
-	CreateArticle(content *model.Article) error
-	UpdateArticle(content *model.Article) error
-	DeleteArticle(id string) error
-}
-
 type contentRepository struct {
-	dbClient  *infrastructure.DynamoDBClient
+	dbClient  *dynamoDBClient
 	tableName string
 }
 
@@ -45,7 +36,7 @@ type ArticleItem struct {
 }
 
 // NewContentRepository は新しいContentRepositoryインスタンスを作成します
-func NewContentRepository(dbClient *infrastructure.DynamoDBClient) ContentRepository {
+func NewContentRepository(dbClient *dynamoDBClient) *contentRepository {
 	return &contentRepository{
 		dbClient:  dbClient,
 		tableName: "Contents",
@@ -63,7 +54,7 @@ func (cr *contentRepository) GetArticles(ctx context.Context) ([]model.Article, 
 		},
 	}
 
-	result, err := cr.dbClient.Client.Query(ctx, input)
+	result, err := cr.dbClient.client.Query(ctx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +114,7 @@ func (cr *contentRepository) CreateArticle(content *model.Article) error {
 		Item:      av,
 	}
 
-	_, err = cr.dbClient.Client.PutItem(ctx, input)
+	_, err = cr.dbClient.client.PutItem(ctx, input)
 	return err
 }
 

@@ -1,4 +1,4 @@
-package infrastructure
+package repository
 
 import (
 	"context"
@@ -11,28 +11,29 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/stretchr/testify/suite"
 	"github.com/testcontainers/testcontainers-go"
 	dynamodbLocal "github.com/testcontainers/testcontainers-go/modules/dynamodb"
 )
 
-// DynamoDBContainer はDynamoDB Localコンテナを管理する構造体
-type DynamoDBContainer struct {
-	Container testcontainers.Container
-	Client    *dynamodb.Client
-	Endpoint  string
+type dynamoDBContainer struct {
+	container testcontainers.Container
+	client    *dynamodb.Client
+	endpoint  string
 }
 
-var dynamoDBContainer *DynamoDBContainer
 
-// GetTestDynamoDBClient はテスト用のDynamoDBクライアントを返します
-func GetTestDynamoDBClient() *DynamoDBClient {
-	return NewDynamoDBClientFromContainer(dynamoDBContainer)
+type dynamodbTestcontainersTestSuite struct {
+	suite.Suite
+	dynamoContainer *dynamoDBContainer
+	ctx             context.Context
+	contentRepository *contentRepository
 }
 
 // SetupDynamoDBContainer はDynamoDB Localコンテナをセットアップします
-func SetupDynamoDBContainer(ctx context.Context) (*DynamoDBContainer, error) {
+func setupDynamoDBContainer(ctx context.Context) (*dynamoDBContainer, error) {
 	// DynamoDB Localコンテナの設定
-	container, err := dynamodbLocal.Run(context.Background(), "amazon/dynamodb-local:latest")
+	container, err := dynamodbLocal.Run(ctx, "amazon/dynamodb-local:latest")
 	if err != nil {
 		return nil, fmt.Errorf("DynamoDB Localコンテナの起動に失敗しました: %w", err)
 	}
@@ -64,17 +65,17 @@ func SetupDynamoDBContainer(ctx context.Context) (*DynamoDBContainer, error) {
 	})
 
 	// コンテナとクライアントを保持
-	dynamodbContainer := &DynamoDBContainer{
-		Container: container,
-		Client:    client,
-		Endpoint:  endpoint,
+	dynamodbContainer := &dynamoDBContainer{
+		container: container,
+		client:    client,
+		endpoint:  endpoint,
 	}
 
 	return dynamodbContainer, nil
 }
 
 // CreateTable はDynamoDBテーブルを作成します
-func (d *DynamoDBContainer) CreateTable(ctx context.Context, tableName string) error {
+func (d *dynamoDBContainer) createTable(ctx context.Context, tableName string) error {
 	// テーブル作成
 	input := &dynamodb.CreateTableInput{
 		TableName: aws.String(tableName),
@@ -134,13 +135,13 @@ func (d *DynamoDBContainer) CreateTable(ctx context.Context, tableName string) e
 		},
 	}
 
-	_, err := d.Client.CreateTable(ctx, input)
+	_, err := d.client.CreateTable(ctx, input)
 	if err != nil {
 		return fmt.Errorf("テーブル %s の作成に失敗しました: %w", tableName, err)
 	}
 
 	// テーブルが作成されるまで待機
-	waiter := dynamodb.NewTableExistsWaiter(d.Client)
+	waiter := dynamodb.NewTableExistsWaiter(d.client)
 	err = waiter.Wait(ctx, &dynamodb.DescribeTableInput{
 		TableName: aws.String(tableName),
 	}, 5*time.Second)
@@ -153,14 +154,27 @@ func (d *DynamoDBContainer) CreateTable(ctx context.Context, tableName string) e
 	return nil
 }
 
-// Teardown はコンテナを停止して削除します
-func (d *DynamoDBContainer) Teardown(ctx context.Context) error {
-	return d.Container.Terminate(ctx)
+func (s *dynamodbTestcontainersTestSuite) SetupSuite() {
+	s.ctx = context.Background()
+	container, err := setupDynamoDBContainer(s.ctx)
+	if err != nil {
+		s.T().Fatalf("DynamoDB Localコンテナのセットアップに失敗しました: %v", err)
+	}
+	s.dynamoContainer = container
+	s.contentRepository = NewContentRepository(&dynamoDBClient{
+		client: container.client,
+	})
+	err = container.createTable(s.ctx, "Contents")
+	if err != nil {
+		s.T().Fatalf("テーブルの作成に失敗しました: %v", err)
+	}
 }
 
-// NewDynamoDBClientFromContainer はDynamoDBコンテナからDynamoDBClientを作成します
-func NewDynamoDBClientFromContainer(container *DynamoDBContainer) *DynamoDBClient {
-	return &DynamoDBClient{
-		Client: container.Client,
+func (d *dynamodbTestcontainersTestSuite) TearDownSuite() {
+	if d.dynamoContainer != nil {
+		err := d.dynamoContainer.container.Terminate(d.ctx)
+		if err != nil {
+			d.T().Fatalf("DynamoDB Localコンテナの停止に失敗しました: %v", err)
+		}
 	}
 }
