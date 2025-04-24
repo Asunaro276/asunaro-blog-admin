@@ -5,15 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
-
-// MockDynamoDBClient はDynamoDBClientのモック
-type MockDynamoDBClient struct {
-	*dynamoDBClient
-	mock.Mock
-}
 
 func TestContentRepository(t *testing.T) {
 	suite.Run(t, new(dynamodbTestcontainersTestSuite))
