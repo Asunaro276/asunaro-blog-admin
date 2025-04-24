@@ -2,7 +2,6 @@ package main
 
 import (
 	"cms_api/internal/controller"
-	"cms_api/internal/infrastructure"
 	"cms_api/internal/infrastructure/repository"
 	usecase "cms_api/internal/usecase/content"
 	"cms_api/internal/usecase/healthcheck"
@@ -21,7 +20,7 @@ func init() {
 	e := echo.New()
 	e.Use(middleware.Recover())
 
-	dbClient, _ := infrastructure.NewDynamoDBClient()
+	dbClient, _ := repository.NewDynamoDBClient()
 	// リポジトリの初期化
 	contentRepository := repository.NewContentRepository(dbClient)
 
