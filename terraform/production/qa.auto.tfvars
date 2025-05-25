@@ -1,0 +1,5 @@
+name       = "cms"
+env        = "production"
+domain     = ""
+language   = "go"
+image_name = "cms-api"
