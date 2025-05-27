@@ -8,11 +8,6 @@ resource "aws_lambda_function" "cms" {
   runtime          = "provided.al2023"
   source_code_hash = data.aws_s3_object.lambda_package_hash.body
   timeout          = 30
-  environment {
-    variables = {
-      LOG_LEVEL = local.cloudwatch_log_level # 環境別にログレベルを設定
-    }
-  }
 
   vpc_config {
     subnet_ids         = [for subnet in aws_subnet.private : subnet.id]
@@ -44,41 +39,33 @@ resource "aws_iam_role_policy" "cms_lambda" {
     Statement = [
       {
         Action = [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem"
+          "s3:GetObject"
         ]
         Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Effect   = "Allow"
-        Resource = "${aws_cloudwatch_log_group.cms.arn}:*"
-      },
-      {
-        Action = [
-          "ec2:CreateNetworkInterface",
-          "ec2:DescribeNetworkInterfaces",
-          "ec2:DeleteNetworkInterface"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
+        Resource = "${aws_s3_bucket.lambda_assets.arn}/*"
       }
     ]
   })
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
+  role       = aws_iam_role.cms_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
+  role       = aws_iam_role.cms_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_cloudwatch_log_group" "cms" {
-  retention_in_days = local.cloudwatch_retention_days
+  retention_in_days = 1
   name              = "/aws/lambda/${aws_lambda_function.cms.function_name}"
 
   tags = {
     Name     = "${var.name}-lambda-logs"
     Purpose  = "cost-optimized"
-    LogLevel = local.cloudwatch_log_level
+    LogLevel = "INFO"
   }
 }
 
@@ -98,9 +85,4 @@ resource "aws_security_group" "lambda" {
   tags = {
     Name = "lambda-sg"
   }
-}
-
-variable "lambda_subnet_ids" {
-  description = "List of subnet IDs where the Lambda function will be deployed"
-  type        = list(string)
 }

@@ -73,24 +73,4 @@ locals {
   package_base64sha256_local_path = "${local.codedir_local_path}/output/main.base64sha256"
   package_s3_key                  = "cms/main.zip"
   package_base64sha256_s3_key     = "${local.package_s3_key}.base64sha256.txt"
-
-  # CloudWatch設定（環境別）
-  cloudwatch_settings = {
-    dev = {
-      log_level      = "INFO" # 開発環境では詳細ログ
-      retention_days = 1      # コスト削減のため1日のみ
-    }
-    qa = {
-      log_level      = "WARN" # QA環境では警告以上
-      retention_days = 1      # コスト削減のため1日のみ  
-    }
-    production = {
-      log_level      = "ERROR" # 本番環境では最小ログでコスト削減
-      retention_days = 1       # 最短保存期間でコスト削減
-    }
-  }
-
-  # 現在の環境に対応するCloudWatch設定
-  cloudwatch_log_level      = local.cloudwatch_settings[var.env].log_level
-  cloudwatch_retention_days = local.cloudwatch_settings[var.env].retention_days
 }
