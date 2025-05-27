@@ -1,7 +1,8 @@
 resource "aws_rds_cluster" "aurora_mysql_serverless" {
   cluster_identifier      = "aurora-mysql-serverless"
   engine                  = "aurora-mysql"
-  engine_mode             = "serverless"
+  engine_mode             = "provisioned"
+  engine_version          = "8.0.mysql_aurora.3.04.1"
   database_name           = "mydb"
   master_username         = "admin"
   master_password         = var.database_password
@@ -9,21 +10,22 @@ resource "aws_rds_cluster" "aurora_mysql_serverless" {
   preferred_backup_window = "02:00-03:00"
   skip_final_snapshot     = true
 
-  scaling_configuration {
-    auto_pause               = true
-    max_capacity             = 16
-    min_capacity             = 1
-    seconds_until_auto_pause = 300
-    timeout_action           = "ForceApplyCapacityChange"
+  serverlessv2_scaling_configuration {
+    max_capacity = 16
+    min_capacity = 0.5
   }
 
   vpc_security_group_ids = [aws_security_group.aurora_mysql.id]
   db_subnet_group_name   = aws_db_subnet_group.aurora_mysql.name
+
+  tags = {
+    Name = "aurora-mysql-serverless-v2"
+  }
 }
 
 resource "aws_db_subnet_group" "aurora_mysql" {
   name       = "aurora-mysql-subnet-group"
-  subnet_ids = var.database_subnet_ids
+  subnet_ids = [for subnet in aws_subnet.private : subnet.id]
 
   tags = {
     Name = "Aurora MySQL subnet group"
@@ -33,7 +35,7 @@ resource "aws_db_subnet_group" "aurora_mysql" {
 resource "aws_security_group" "aurora_mysql" {
   name        = "aurora-mysql-sg"
   description = "Allow MySQL traffic from Lambda only"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     description     = "MySQL from Lambda"
@@ -57,8 +59,8 @@ resource "aws_security_group" "aurora_mysql" {
 
 resource "aws_rds_cluster_parameter_group" "aurora_mysql" {
   name        = "aurora-mysql-parameter-group"
-  family      = "aurora-mysql5.7"
-  description = "Aurora MySQL parameter group"
+  family      = "aurora-mysql8.0"
+  description = "Aurora MySQL parameter group for Serverless v2"
 
   parameter {
     name  = "character_set_server"
@@ -69,37 +71,20 @@ resource "aws_rds_cluster_parameter_group" "aurora_mysql" {
     name  = "character_set_client"
     value = "utf8mb4"
   }
+
+  tags = {
+    Name = "aurora-mysql-parameter-group-v2"
+  }
 }
 
-# 必要な変数の定義
 variable "database_password" {
   description = "Password for the master DB user"
   type        = string
   sensitive   = true
 }
 
-variable "vpc_id" {
-  description = "VPC ID where the DB will be deployed"
-  type        = string
-}
-
-variable "vpc_cidr_block" {
-  description = "CIDR block of the VPC"
-  type        = string
-}
-
-variable "database_subnet_ids" {
-  description = "List of subnet IDs where the DB can be deployed"
-  type        = list(string)
-}
-
-# 出力値の定義
-output "rds_cluster_endpoint" {
-  description = "The cluster endpoint"
-  value       = aws_rds_cluster.aurora_mysql_serverless.endpoint
-}
-
-output "rds_cluster_id" {
-  description = "The ID of the cluster"
-  value       = aws_rds_cluster.aurora_mysql_serverless.id
+variable "enable_reader" {
+  description = "Enable Aurora reader instance"
+  type        = bool
+  default     = false
 }

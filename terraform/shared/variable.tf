@@ -67,6 +67,7 @@ variable "aws_endpoint_url_s3" {
 }
 
 locals {
+  # コードディレクトリとパッケージ関連の設定
   codedir_local_path              = "${path.module}/../../cms_api/${var.language}"
   package_local_path              = "${local.codedir_local_path}/output/main.zip"
   package_base64sha256_local_path = "${local.codedir_local_path}/output/main.base64sha256"
