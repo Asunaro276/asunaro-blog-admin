@@ -1,0 +1,22 @@
+nohup: ignoring input
+
+   ____    __
+  / __/___/ /  ___
+ / _// __/ _ \/ _ \
+/___/\__/_//_/\___/ v4.13.4
+High performance, minimalist Go web framework
+https://echo.labstack.com
+____________________________________O/_______
+                                    O\
+⇨ http server started on [::]:8080
+{"time":"2025-07-17T23:29:48.586350597+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":66149070,"latency_human":"66.14907ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:29:49.6451829+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":15431311,"latency_human":"15.431311ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:29:51.666157983+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":13662038,"latency_human":"13.662038ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:29:55.692014219+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":12737299,"latency_human":"12.737299ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:30:01.805149885+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":13527538,"latency_human":"13.527538ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:30:02.83626928+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":15279153,"latency_human":"15.279153ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:30:04.858890603+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":12937517,"latency_human":"12.937517ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:30:08.875702954+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":13813728,"latency_human":"13.813728ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:30:19.453533359+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":13819859,"latency_human":"13.819859ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:30:20.474903161+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":12721322,"latency_human":"12.721322ms","bytes_in":0,"bytes_out":204}
+{"time":"2025-07-17T23:30:22.490774715+09:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36","status":500,"error":"","latency":12260695,"latency_human":"12.260695ms","bytes_in":0,"bytes_out":204}
