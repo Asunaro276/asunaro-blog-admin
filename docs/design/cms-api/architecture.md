@@ -26,8 +26,7 @@ graph TB
         end
         
         subgraph "アプリケーション層"
-            Lambda1[Lambda Function<br/>Get Content Detail]
-            Lambda2[Lambda Function<br/>Get Content List]
+            Lambda[Lambda Function<br/>CMS API (Echo)]            
         end
         
         subgraph "データ層"
@@ -43,16 +42,11 @@ graph TB
     
     Client --> WAF
     WAF --> APIGW
-    APIGW --> Lambda1
-    APIGW --> Lambda2
-    Lambda1 --> Aurora
-    Lambda2 --> Aurora
-    Lambda1 --> Secret
-    Lambda2 --> Secret
-    Lambda1 --> CloudWatch
-    Lambda2 --> CloudWatch
-    Lambda1 --> XRay
-    Lambda2 --> XRay
+    APIGW --> Lambda
+    Lambda --> Aurora
+    Lambda --> Secret
+    Lambda --> CloudWatch
+    Lambda --> XRay
 ```
 
 ## コンポーネント詳細
@@ -81,8 +75,9 @@ graph TB
   - レート制限ルール
   - カスタムIP許可/拒否リスト
 
-### Lambda Functions
+### Lambda Function (CMS API)
 - **実装言語**: Go 1.21
+- **Webフレームワーク**: Echo v4
 - **実行環境**: 
   - メモリ: 512MB-1GB（トラフィックに応じて調整）
   - タイムアウト: 30秒
@@ -92,15 +87,16 @@ graph TB
   - `DB_CLUSTER_ARN`: Aurora クラスター ARN
   - `LOG_LEVEL`: ログレベル設定
 
-#### Content Detail Function
-- **責務**: 特定コンテンツの詳細情報取得
-- **入力**: コンテンツID（パスパラメータ）
-- **出力**: コンテンツ詳細情報（JSON）
+#### 単一Lambda構成の利点
+- **コールドスタート最適化**: 1つのLambda関数による初期化時間の削減
+- **リソース効率**: 共通の依存関係とコネクションプールの共有
+- **デプロイ簡素化**: 単一のデプロイメントユニット
+- **運用コスト削減**: Lambda関数数の削減による管理コスト低減
 
-#### Content List Function
-- **責務**: コンテンツ一覧の取得
-- **入力**: ページネーションパラメータ（クエリパラメータ）
-- **出力**: コンテンツ一覧（JSON）
+#### 提供エンドポイント
+- **`GET /contents/{id}`**: 特定コンテンツの詳細情報取得
+- **`GET /contents`**: コンテンツ一覧の取得（ページネーション対応）
+- **`GET /healthcheck`**: システムヘルスチェック
 
 ### Aurora Serverless v2
 - **エンジン**: PostgreSQL 15

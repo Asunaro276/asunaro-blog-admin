@@ -212,6 +212,88 @@ GET /contents
 }
 ```
 
+### 3. ヘルスチェック
+
+システムの動作状態を確認します。
+
+#### リクエスト
+
+```
+GET /healthcheck
+```
+
+**パスパラメータ**
+なし
+
+**クエリパラメータ**
+なし
+
+#### レスポンス
+
+**成功時 (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "status": "healthy",
+    "timestamp": "2024-01-15T15:30:00Z",
+    "version": "1.0.0",
+    "environment": "production",
+    "database": {
+      "status": "connected",
+      "responseTime": 12
+    },
+    "services": {
+      "aurora": "healthy",
+      "secretsManager": "healthy"
+    }
+  },
+  "meta": {
+    "requestId": "req_health_123456",
+    "timestamp": "2024-01-15T15:30:00Z",
+    "processingTimeMs": 15
+  }
+}
+```
+
+**エラー時 (503 Service Unavailable)**
+
+```json
+{
+  "success": false,
+  "data": {
+    "status": "unhealthy",
+    "timestamp": "2024-01-15T15:30:00Z",
+    "version": "1.0.0",
+    "environment": "production",
+    "database": {
+      "status": "disconnected",
+      "responseTime": null,
+      "error": "Connection timeout"
+    },
+    "services": {
+      "aurora": "unhealthy",
+      "secretsManager": "healthy"
+    }
+  },
+  "error": {
+    "code": "SERVICE_UNAVAILABLE",
+    "message": "サービスが一時的に利用できません",
+    "details": {
+      "failedServices": ["database"]
+    },
+    "timestamp": "2024-01-15T15:30:00Z",
+    "requestId": "req_health_123456"
+  },
+  "meta": {
+    "requestId": "req_health_123456",
+    "timestamp": "2024-01-15T15:30:00Z",
+    "processingTimeMs": 5000
+  }
+}
+```
+
 ## エラーコード一覧
 
 ### 4xx クライアントエラー
@@ -232,6 +314,7 @@ GET /contents
 | `DATABASE_ERROR` | 500 | データベースエラーが発生しました |
 | `TIMEOUT_ERROR` | 504 | タイムアウトが発生しました |
 | `CONNECTION_ERROR` | 500 | 接続エラーが発生しました |
+| `SERVICE_UNAVAILABLE` | 503 | サービスが一時的に利用できません |
 
 ## APIリクエスト例
 
@@ -248,6 +331,10 @@ curl -X GET "https://api.cms.example.com/v1/contents?status=published&limit=10&s
 
 # 検索クエリ付きリクエスト
 curl -X GET "https://api.cms.example.com/v1/contents?search=AWS&category=technology&tags=API,Lambda" \
+  -H "Accept: application/json"
+
+# ヘルスチェック
+curl -X GET "https://api.cms.example.com/v1/healthcheck" \
   -H "Accept: application/json"
 ```
 
