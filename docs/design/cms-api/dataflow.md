@@ -10,28 +10,20 @@ flowchart TD
     Frontend --> |HTTPS Request| WAF[AWS WAF]
     WAF --> |Security Check| APIGW[API Gateway]
     
-    APIGW --> |Route /contents/{id}| DetailLambda[Content Detail Lambda]
-    APIGW --> |Route /contents| ListLambda[Content List Lambda]
+    APIGW --> |"Route /contents/{id}"| DetailLambda[Content Detail Lambda]
     
     DetailLambda --> |SQL Query| Aurora[Aurora Serverless v2]
-    ListLambda --> |SQL Query| Aurora
     
     DetailLambda --> |Get Credentials| Secrets[Secrets Manager]
-    ListLambda --> |Get Credentials| Secrets
     
     Aurora --> |Query Result| DetailLambda
-    Aurora --> |Query Result| ListLambda
     
     DetailLambda --> |JSON Response| APIGW
-    ListLambda --> |JSON Response| APIGW
     
     APIGW --> |HTTPS Response| Frontend
     Frontend --> |Display Content| User
     
     DetailLambda --> |Logs & Metrics| CloudWatch[CloudWatch]
-    ListLambda --> |Logs & Metrics| CloudWatch
-    DetailLambda --> |Tracing| XRay[X-Ray]
-    ListLambda --> |Tracing| XRay
 ```
 
 ## データ処理フロー

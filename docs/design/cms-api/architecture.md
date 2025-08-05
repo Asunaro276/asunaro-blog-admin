@@ -36,7 +36,6 @@ graph TB
         
         subgraph "監視・ログ"
             CloudWatch[CloudWatch<br/>Logs & Metrics]
-            XRay[X-Ray<br/>分散トレーシング]
         end
     end
     
@@ -46,7 +45,6 @@ graph TB
     Lambda --> Aurora
     Lambda --> Secret
     Lambda --> CloudWatch
-    Lambda --> XRay
 ```
 
 ## コンポーネント詳細
