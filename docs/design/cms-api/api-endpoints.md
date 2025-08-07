@@ -59,26 +59,14 @@ GET /contents/{id}
   "success": true,
   "data": {
     "id": "550e8400-e29b-41d4-a716-446655440000",
-    "title": "CMS API システムの概要",
-    "body": "このCMS APIシステムは、AWS Lambda と Aurora Serverless v2を使用した...",
-    "status": "published",
-    "createdAt": "2024-01-15T10:30:00Z",
-    "updatedAt": "2024-01-15T14:20:00Z",
-    "publishedAt": "2024-01-15T12:00:00Z",
-    "authorId": "admin",
     "metadata": {
-      "seoTitle": "CMS API システム - 高性能なコンテンツ管理",
-      "seoDescription": "AWS Lambda と Aurora Serverlessを使用した高性能CMS API",
-      "tags": ["CMS", "API", "AWS", "Lambda", "Aurora"],
-      "category": "technology",
-      "excerpt": "AWS Lambda と Aurora Serverless v2を使用したサーバーレスCMSシステム",
-      "featuredImageUrl": "https://example.com/images/cms-api-hero.jpg"
-    }
-  },
-  "meta": {
-    "requestId": "req_123456789",
-    "timestamp": "2024-01-15T15:30:00Z",
-    "processingTimeMs": 45
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-15T14:20:00Z",
+      "publishedAt": "2024-01-15T12:00:00Z",
+    },
+    "block1": ~~~,
+    "block2": ~~~,
+    "block3": ~~~,
   }
 }
 ```
@@ -88,37 +76,14 @@ GET /contents/{id}
 ```json
 // 404 Not Found
 {
-  "success": false,
-  "error": {
-    "code": "CONTENT_NOT_FOUND",
-    "message": "指定されたコンテンツが見つかりません",
-    "details": {
-      "contentId": "550e8400-e29b-41d4-a716-446655440000"
-    },
-    "timestamp": "2024-01-15T15:30:00Z",
-    "requestId": "req_123456789"
-  },
-  "meta": {
-    "requestId": "req_123456789",
-    "timestamp": "2024-01-15T15:30:00Z",
-    "processingTimeMs": 12
-  }
+  "code": "CONTENT_NOT_FOUND",
+  "message": "指定されたコンテンツが見つかりません",
 }
 
 // 400 Bad Request
 {
-  "success": false,
-  "error": {
-    "code": "INVALID_PARAMETER",
-    "message": "不正なパラメータです",
-    "details": {
-      "field": "id",
-      "receivedValue": "invalid-uuid",
-      "expectedFormat": "UUID形式の文字列"
-    },
-    "timestamp": "2024-01-15T15:30:00Z",
-    "requestId": "req_123456789"
-  }
+  "code": "INVALID_PARAMETER",
+  "message": "不正なパラメータです",
 }
 ```
 
@@ -156,21 +121,14 @@ GET /contents
     "contents": [
       {
         "id": "550e8400-e29b-41d4-a716-446655440000",
-        "title": "CMS API システムの概要",
-        "body": "このCMS APIシステムは...",
-        "status": "published",
-        "createdAt": "2024-01-15T10:30:00Z",
-        "updatedAt": "2024-01-15T14:20:00Z",
-        "publishedAt": "2024-01-15T12:00:00Z",
-        "authorId": "admin",
         "metadata": {
-          "seoTitle": "CMS API システム - 高性能なコンテンツ管理",
-          "seoDescription": "AWS Lambda と Aurora Serverlessを使用した高性能CMS API",
-          "tags": ["CMS", "API", "AWS"],
-          "category": "technology",
-          "excerpt": "AWS Lambda と Aurora Serverless v2を使用したサーバーレスCMSシステム",
-          "featuredImageUrl": "https://example.com/images/cms-api-hero.jpg"
-        }
+          "createdAt": "2024-01-15T10:30:00Z",
+          "updatedAt": "2024-01-15T14:20:00Z",
+          "publishedAt": "2024-01-15T12:00:00Z",
+        },
+        "block1": ~~~,
+        "block2": ~~~,
+        "block3": ~~~,
       }
     ],
     "pagination": {
@@ -184,11 +142,6 @@ GET /contents
       "nextPage": 2
     }
   },
-  "meta": {
-    "requestId": "req_123456790",
-    "timestamp": "2024-01-15T15:35:00Z",
-    "processingTimeMs": 78
-  }
 }
 ```
 
@@ -197,18 +150,8 @@ GET /contents
 ```json
 // 400 Bad Request (不正なパラメータ)
 {
-  "success": false,
-  "error": {
-    "code": "INVALID_PARAMETER",
-    "message": "不正なパラメータです",
-    "details": {
-      "field": "limit",
-      "receivedValue": 150,
-      "expectedFormat": "1以上100以下の整数"
-    },
-    "timestamp": "2024-01-15T15:35:00Z",
-    "requestId": "req_123456790"
-  }
+  "code": "INVALID_PARAMETER",
+  "message": "不正なパラメータです",
 }
 ```
 
@@ -234,7 +177,6 @@ GET /healthcheck
 
 ```json
 {
-  "success": true,
   "data": {
     "status": "healthy",
     "timestamp": "2024-01-15T15:30:00Z",
@@ -261,7 +203,6 @@ GET /healthcheck
 
 ```json
 {
-  "success": false,
   "data": {
     "status": "unhealthy",
     "timestamp": "2024-01-15T15:30:00Z",
@@ -280,17 +221,7 @@ GET /healthcheck
   "error": {
     "code": "SERVICE_UNAVAILABLE",
     "message": "サービスが一時的に利用できません",
-    "details": {
-      "failedServices": ["database"]
-    },
-    "timestamp": "2024-01-15T15:30:00Z",
-    "requestId": "req_health_123456"
   },
-  "meta": {
-    "requestId": "req_health_123456",
-    "timestamp": "2024-01-15T15:30:00Z",
-    "processingTimeMs": 5000
-  }
 }
 ```
 
