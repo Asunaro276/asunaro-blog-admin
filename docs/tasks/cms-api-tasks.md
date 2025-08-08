@@ -12,7 +12,7 @@
 
 #### TASK-001: データベース環境設定
 
-- [ ] **タスク完了**
+- [x] **タスク完了**
 - **タスクタイプ**: DIRECT
 - **要件リンク**: REQ-405, REQ-001, REQ-002
 - **依存タスク**: なし
@@ -22,13 +22,13 @@
   - 基本インデックス・ビューの作成
   - 初期テストデータの投入
 - **テスト要件**:
-  - [ ] データベース接続テスト
-  - [ ] スキーマ検証テスト
-  - [ ] 初期データ確認テスト
+  - [x] データベース接続テスト
+  - [x] スキーマ検証テスト
+  - [x] 初期データ確認テスト
 - **完了条件**:
-  - [ ] 基本テーブル（contents, content_types, content_blocks, content_block_data）が作成されている
-  - [ ] 基本ビュー（content_details, published_contents）が正常に動作している
-  - [ ] テストデータが適切に投入されている
+  - [x] 基本テーブル（contents, content_types, content_blocks, content_block_data）が作成されている
+  - [x] 基本ビュー（content_details, published_contents）が正常に動作している
+  - [x] テストデータが適切に投入されている
 
 #### TASK-002: Go アプリケーション基本設定
 
