@@ -179,34 +179,6 @@ CREATE TABLE content_reference_hierarchy (
         CHECK (depth >= 0)
 );
 
-/**
- * コンテンツタグテーブル
- * フラットなタグ管理（従来のカテゴリ・タグ機能の代替）
- */
-CREATE TABLE content_tags (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(100) NOT NULL UNIQUE,
-    display_name VARCHAR(200) NOT NULL,
-    description TEXT,
-    color VARCHAR(7),
-    is_active BOOLEAN NOT NULL DEFAULT true,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    created_by VARCHAR(100) NOT NULL
-);
-
-/**
- * コンテンツ-タグ関連テーブル
- * コンテンツとタグの多対多関係
- */
-CREATE TABLE content_tag_assignments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    content_id UUID NOT NULL REFERENCES contents(id) ON DELETE CASCADE,
-    tag_id UUID NOT NULL REFERENCES content_tags(id) ON DELETE CASCADE,
-    assigned_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    assigned_by VARCHAR(100) NOT NULL,
-    UNIQUE(content_id, tag_id)
-);
-
 -- =============================================================================
 -- インデックス設計
 -- =============================================================================
@@ -403,43 +375,6 @@ JOIN contents tc ON cr.target_content_id = tc.id;
 ALTER TABLE contents SET (autovacuum_analyze_scale_factor = 0.05);
 ALTER TABLE contents SET (autovacuum_vacuum_scale_factor = 0.1);
 
--- パーティション設定（将来的な大容量対応）
--- 作成日時ベースでの月次パーティション（コメントアウト - 必要に応じて有効化）
-/*
--- マスターテーブルをパーティションテーブルに変更
-CREATE TABLE contents_partitioned (
-    LIKE contents INCLUDING ALL
-) PARTITION BY RANGE (created_at);
-
--- 月次パーティション作成例
-CREATE TABLE contents_202401 PARTITION OF contents_partitioned
-    FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
-CREATE TABLE contents_202402 PARTITION OF contents_partitioned
-    FOR VALUES FROM ('2024-02-01') TO ('2024-03-01');
-*/
-
--- =============================================================================
--- セキュリティ設定
--- =============================================================================
-
--- RLS (Row Level Security) の有効化準備
--- ALTER TABLE contents ENABLE ROW LEVEL SECURITY;
-
--- サンプルRLSポリシー（コメントアウト - 認証実装時に使用）
-/*
--- 作成者のみが自分のコンテンツを編集可能
-CREATE POLICY contents_author_policy ON contents
-    FOR ALL
-    TO cms_api_role
-    USING (author_id = current_setting('app.current_user_id'));
-
--- 公開コンテンツは全員が閲覧可能
-CREATE POLICY contents_public_read_policy ON contents
-    FOR SELECT
-    TO public
-    USING (status = 'published' AND published_at <= CURRENT_TIMESTAMP);
-*/
-
 -- =============================================================================
 -- インデックス使用統計監視用ビュー
 -- =============================================================================
@@ -493,13 +428,6 @@ INSERT INTO content_type_fields (content_type_id, field_name, display_name, fiel
 ('550e8400-e29b-41d4-a716-446655440003', 'product_image', '商品画像', 'url', false, 3),
 ('550e8400-e29b-41d4-a716-446655440003', 'release_date', '発売日', 'date', false, 4);
 
--- タグの作成
-INSERT INTO content_tags (id, name, display_name, description, color, created_by) VALUES 
-('550e8400-e29b-41d4-a716-446655440101', 'technology', 'テクノロジー', '技術関連のコンテンツ', '#007bff', 'admin'),
-('550e8400-e29b-41d4-a716-446655440102', 'cms', 'CMS', 'CMSに関する内容', '#28a745', 'admin'),
-('550e8400-e29b-41d4-a716-446655440103', 'api', 'API', 'API関連の内容', '#dc3545', 'admin'),
-('550e8400-e29b-41d4-a716-446655440104', 'performance', 'パフォーマンス', 'パフォーマンス最適化', '#ffc107', 'admin');
-
 -- コンテンツの作成
 INSERT INTO contents (id, content_type_id, title, slug, status, author_id, published_at) VALUES 
 ('550e8400-e29b-41d4-a716-446655440201', '550e8400-e29b-41d4-a716-446655440001', 'CMS API システムの概要', 'cms-api-overview', 'published', 'admin', CURRENT_TIMESTAMP - INTERVAL '1 day'),
@@ -528,10 +456,3 @@ NULL),
 ('550e8400-e29b-41d4-a716-446655440303', 'richtext',
 '{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"このガイドでは、CMS APIのパフォーマンスを最適化するための具体的な手法について説明します。"}]}]}'::jsonb,
 NULL);
-
--- タグ割り当て
-INSERT INTO content_tag_assignments (content_id, tag_id, assigned_by) VALUES 
-('550e8400-e29b-41d4-a716-446655440201', '550e8400-e29b-41d4-a716-446655440101', 'admin'),
-('550e8400-e29b-41d4-a716-446655440201', '550e8400-e29b-41d4-a716-446655440102', 'admin'),
-('550e8400-e29b-41d4-a716-446655440201', '550e8400-e29b-41d4-a716-446655440103', 'admin'),
-('550e8400-e29b-41d4-a716-446655440202', '550e8400-e29b-41d4-a716-446655440104', 'admin');
