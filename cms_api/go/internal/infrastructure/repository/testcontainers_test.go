@@ -22,11 +22,10 @@ type dynamoDBContainer struct {
 	endpoint  string
 }
 
-
 type dynamodbTestcontainersTestSuite struct {
 	suite.Suite
-	dynamoContainer *dynamoDBContainer
-	ctx             context.Context
+	dynamoContainer   *dynamoDBContainer
+	ctx               context.Context
 	contentRepository *contentRepository
 }
 
