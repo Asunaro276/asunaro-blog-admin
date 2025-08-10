@@ -39,7 +39,7 @@ jobs:
         run: make test
 
       - name: Run lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v8
         with:
           version: v2.0
           working-directory: ${{ env.WORKING_DIRECTORY }}
