@@ -10,8 +10,11 @@ func main() {
 	// 設定の読み込み
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		log.Fatalf("設定の読み込みに失敗しました: %v", err)
+		log.Fatalf("スタンドアロンサーバー設定の読み込みに失敗しました: %v", err)
 	}
+
+	log.Printf("スタンドアロンサーバーを初期化します: DB=%s:%d/%s",
+		cfg.Database.Host, cfg.Database.Port, cfg.Database.DBName)
 
 	// Echo サーバーの初期化と起動
 	e := route.RouteHandler(cfg)
@@ -20,5 +23,8 @@ func main() {
 	address := cfg.Server.Host + ":" + cfg.Server.Port
 	log.Printf("CMS APIサーバーを開始します: http://%s", address)
 
-	e.Logger.Fatal(e.Start(address))
+	// サーバー開始（ブロッキング）
+	if err := e.Start(address); err != nil {
+		log.Fatalf("サーバーの開始に失敗しました: %v", err)
+	}
 }
