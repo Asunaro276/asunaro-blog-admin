@@ -8,12 +8,14 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // PostgresDB はPostgreSQLデータベース接続を管理する構造体です
 type PostgresDB struct {
-	db     *sql.DB
+	db     *gorm.DB
 	config *config.Config
 }
 
@@ -21,20 +23,39 @@ type PostgresDB struct {
 func NewPostgresDB(cfg *config.Config) (*PostgresDB, error) {
 	dsn := cfg.GetDSN()
 
-	db, err := sql.Open("postgres", dsn)
+	// Gormのロガー設定
+	gormLogger := logger.New(
+		log.New(log.Writer(), "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             time.Second,
+			LogLevel:                  logger.Info,
+			IgnoreRecordNotFoundError: true,
+			Colorful:                  false,
+		},
+	)
+
+	// Gormデータベース接続を開く
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: gormLogger,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("データベース接続の作成に失敗しました: %w", err)
 	}
 
+	// 基盤となるsql.DBを取得して接続プールを設定
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, fmt.Errorf("sql.DBの取得に失敗しました: %w", err)
+	}
+
 	// 接続プールの設定
-	db.SetMaxOpenConns(25)
-	db.SetMaxIdleConns(5)
-	db.SetConnMaxLifetime(5 * time.Minute)
-	db.SetConnMaxIdleTime(1 * time.Minute)
+	sqlDB.SetMaxOpenConns(25)
+	sqlDB.SetMaxIdleConns(5)
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
+	sqlDB.SetConnMaxIdleTime(1 * time.Minute)
 
 	// 接続テスト
-	if err := db.Ping(); err != nil {
-		db.Close()
+	if err := sqlDB.Ping(); err != nil {
 		return nil, fmt.Errorf("データベースへのpingが失敗しました: %w", err)
 	}
 
@@ -47,8 +68,8 @@ func NewPostgresDB(cfg *config.Config) (*PostgresDB, error) {
 	}, nil
 }
 
-// GetDB はsql.DBインスタンスを返します
-func (p *PostgresDB) GetDB() *sql.DB {
+// GetDB はgorm.DBインスタンスを返します
+func (p *PostgresDB) GetDB() *gorm.DB {
 	return p.db
 }
 
@@ -56,7 +77,11 @@ func (p *PostgresDB) GetDB() *sql.DB {
 func (p *PostgresDB) Close() error {
 	if p.db != nil {
 		log.Println("PostgreSQL接続を閉じます")
-		return p.db.Close()
+		sqlDB, err := p.db.DB()
+		if err != nil {
+			return fmt.Errorf("sql.DBの取得に失敗しました: %w", err)
+		}
+		return sqlDB.Close()
 	}
 	return nil
 }
@@ -70,14 +95,19 @@ func (p *PostgresDB) HealthCheck() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	if err := p.db.PingContext(ctx); err != nil {
+	// 基盤となるsql.DBを取得してPingを実行
+	sqlDB, err := p.db.DB()
+	if err != nil {
+		return fmt.Errorf("sql.DBの取得に失敗しました: %w", err)
+	}
+
+	if err := sqlDB.PingContext(ctx); err != nil {
 		return fmt.Errorf("データベースヘルスチェックに失敗しました: %w", err)
 	}
 
-	// 基本的なクエリテスト
-	var count int
-	query := "SELECT COUNT(*) FROM content_types WHERE is_active = true"
-	if err := p.db.QueryRowContext(ctx, query).Scan(&count); err != nil {
+	// Gormを使用した基本的なクエリテスト
+	var count int64
+	if err := p.db.WithContext(ctx).Table("content_types").Where("is_active = ?", true).Count(&count).Error; err != nil {
 		return fmt.Errorf("データベーステストクエリに失敗しました: %w", err)
 	}
 
@@ -90,5 +120,11 @@ func (p *PostgresDB) GetStats() sql.DBStats {
 	if p.db == nil {
 		return sql.DBStats{}
 	}
-	return p.db.Stats()
+	
+	sqlDB, err := p.db.DB()
+	if err != nil {
+		return sql.DBStats{}
+	}
+	
+	return sqlDB.Stats()
 }
